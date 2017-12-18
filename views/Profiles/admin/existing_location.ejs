@@ -1,0 +1,28 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Existing Location</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+		<h1>Existing Locations </h1>
+			<% for(var i=0; i < user.length; i++) { %>
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<h3><%= user[i].city %></h3><br>
+						<%= user[i].state %><br>
+						Dealer Count: <%= user[i].dealer_count %> <br>
+						Equipment Count: <%= user[i].equipment_count %>
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+	</div>
+</body>
+</html>

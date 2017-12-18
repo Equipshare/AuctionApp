@@ -1,0 +1,45 @@
+<!-- views/Profiles/new_location.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Add new Location</title>
+</head>
+<body>
+<div>
+	<%- include header.ejs %>
+	<div class="main">
+		<div class="row">
+			<!-- LOCAL INFORMATION -->
+			<div class="col-sm-6">
+				<div class="well">
+					<h3><span class="fa fa-user"></span>Add new Location</h3>
+					<p>
+						<!-- show any messages that come back with authentication -->
+						<% if (message.length > 0) { %>
+							<div class="alert alert-danger"><%= message %></div>
+						<% } %>
+
+						<form action="/add_new_auction" method="post">
+							Add Start Time<br>
+							<input type="datetime-local" name="start_time">
+							<br>
+							Add END TIME<br>
+							<input type="datetime-local" name="end_time">
+							<br><br>
+							<div class="form-group">
+								<label>This is featured</label>
+								<select name = "is_featured" type="number" class="form-control">
+									  <option value= 1>Yes</option>
+									  <option value= 0>NO</option>
+								</select>
+							</div>
+							<input type="submit" value="Submit">
+						</form>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+</html>

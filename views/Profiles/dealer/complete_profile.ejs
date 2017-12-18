@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+	<title>After Lofin Dealer</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<h3><span class="fa fa-user"></span>Complete your profile</h3>
+						<p>
+							<form action="/complete_profile" method="post">
+								<div class="form-group">
+									<label>Pan Card Number</label>
+									<input type="text" class="form-control" name="pan_number">
+								</div>
+								<div class="form-group">
+									<label>GST number</label>
+									<input type="text" class="form-control" name="gst_number">
+								</div>
+								<div class = "form-group">
+									<label>Location</label>
+									<select name = "location" type="number" class="form-control">
+									  <% for(var i=0; i < user.length; i++) { %>
+										  <option value= <%= user[i].sno %> ><%= user[i].city %></option>
+									  <% } %>
+									</select>
+								</div>
+								<button type="submit" class="btn btn-warning btn-lg">Update My Info</button>
+							</form>
+						</p>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

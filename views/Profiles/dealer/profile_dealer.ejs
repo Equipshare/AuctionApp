@@ -1,0 +1,34 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>After Lofin Dealer</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<h3><span class="fa fa-user"></span>Dealer</h3>
+						<p>
+							<strong>id</strong>: <%= user.id %><br>
+							<strong>username</strong>: <%= user.username %><br>
+							<strong>password</strong>: <%= user.password %><br>
+							<strong>Category</strong>: <%= user.category %><br>
+							<strong>email</strong>: <%= user.email %><br>
+							<strong>Mobile number</strong>: <%= user.mobile %><br>
+							<strong>wallet</strong>: <%= user.wallet %><br>
+						</p>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+

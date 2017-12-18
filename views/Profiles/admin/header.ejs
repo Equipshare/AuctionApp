@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://use.fontawesome.com/eddb453e51.js"></script>
+	<style>
+	body {
+	    font-family: "Lato", sans-serif;
+	}
+
+	.sidenav {
+	    height: 100%;
+	    margin-top: 2cm;
+	    width: 200px;
+	    position: fixed;
+	    z-index: 1;
+	    top: 0;
+	    left: 0;
+	    background-color: #111;
+	    overflow-x: hidden;
+	    padding-top: 20px;
+	}
+
+	.sidenav a {
+	    padding: 6px 6px 6px 32px;
+	    text-decoration: none;
+	    font-size: 15px;
+	    color: #818181;
+	    display: block;
+	}
+
+	.sidenav a:hover {
+	    color: #f1f1f1;
+	}
+
+	.main {
+	    margin-left: 200px; /* Same as the width of the sidenav */
+	}
+
+	@media screen and (max-height: 450px) {
+	  .sidenav {padding-top: 15px;}
+	  .sidenav a {font-size: 18px;}
+	}
+	</style>
+</head>
+
+<body>
+	<div class="sidenav">
+		<a href = "">Dashboard</a>
+	 	<a href="#">Dealers</a>
+	  	<a href="#">Users</a>
+	  	<ul>
+		  	<li><a href="/existing_user">Exsting Users</a></li>
+		  	<li><a href="/add_new_admin">Add new Admin</a></li>
+	  	</ul>
+	  	<a href="#">Category</a>
+	  	<ul>
+         	<li><a href="/enquiry_form">Enquiry Form</a></li>
+			<li><a href="/add_new_equipment">Add equipment</a></li>
+			<li><a href="/add_new_auction">Add Auction</a></li>
+        </ul>
+	  	<a href="/wallet">Wallet</a>
+	  	<a href="#">Reports</a>
+	  	<a href="#">Location</a>
+	  	<ul>
+         	<li><a href="/new_location">Add New Location</a></li>
+			<li><a href="/existing_location">Existing Locations</a></li>
+        </ul>
+	</div>
+
+
+	<nav class="navbar navbar-inverse">
+	  	<div class="container-fluid">
+	    	<div class="navbar-header">
+	      		<a class="navbar-brand" href="#">EquipShare Auctions</a>
+	   		</div>
+
+	   		<form class="navbar-form navbar-left" action="/action_page.php">
+	      		<div class="form-group">
+	        		<input type="text" class="form-control" placeholder="Search" name="search">
+	      		</div>
+	      		<button type="submit" class="btn btn-default">Submit</button>
+	    	</form>
+
+	    	<ul class="nav navbar-nav navbar-right">
+	    		<li class="active"><a href="#"><i class="fa fa-home" aria-hidden="true"></i>  Home</a></li>
+	      		<li><a href="/cookie"><i class="fa fa-bell" aria-hidden="true"> Notifications</i></a></li>
+	      		<li><a href="/profile"><i class="fa fa-user" aria-hidden="true">  My Profile</i></a></li>
+	      		<li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true">  Logout</i></a></li>
+	    	</ul>
+	  	</div>
+	</nav>
+
+</body>
+</html>

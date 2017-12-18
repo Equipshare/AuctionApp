@@ -1,0 +1,50 @@
+<!-- views/Profiles/new_location.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Add new Equipment</title>
+</head>
+<body>
+<div>
+	<%- include header.ejs %>
+	<div class="main">
+		<div class="row">
+			<!-- LOCAL INFORMATION -->
+			<div class="col-sm-6">
+				<div class="well">
+					<h3><span class="fa fa-user"></span>Add new Equipment</h3>
+					<p>
+					<!-- show any messages that come back with authentication -->
+					<% if (message.length > 0) { %>
+						<div class="alert alert-danger"><%= message %></div>
+					<% } %>
+
+					<!-- NEW ADMIN FORM -->
+					<form action="/add_new_equipment" method="post">
+						<div class="form-group">
+							<label>Asset name</label>
+							<input type="text" class="form-control" name="asset_name">
+						</div>
+						<div class="form-group">
+							<label>Model</label>
+							<input type="text" class="form-control" name="model">
+						</div>
+						<div class="form-group">
+							<label>Market Price</label>
+							<input type="number" class="form-control" name="market_price">
+						</div>
+						<div class="form-group">
+							<label>Description</label>
+							<textarea rows="4" cols="50" class="form-control" name="description"></textarea>
+						</div>
+						<button type="submit" class="btn btn-warning btn-lg">Add New Equipment</button>
+					</form>
+					</p>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+</html>

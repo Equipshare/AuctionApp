@@ -1,0 +1,31 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>After Admin User</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+		<h1>All Equipment</h1>
+			<% for(var i=0; i < user.length; i++) { %>
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<i class="fa fa-car fa-3x" aria-hidden="true"></i>
+						<strong>name</strong>: <%= user[i].name %><br>
+						<strong>year</strong>: <%= user[i].year %><br>
+						<strong>Bought Price</strong>: <%= user[i].bought_price %><br>
+						<strong>rating</strong>: <%= user[i].rating %><br>
+						<strong>Dealer</strong>: <%= user[i].dealer %><br>
+						<strong>Available</strong>: <%= user[i].auction_para %><br>
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+	</div>
+</body>
+</html>
