@@ -29,7 +29,7 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
   CREATE TABLE std_equipment (id int NOT NULL AUTO_INCREMENT, asset_name varchar(25), model varchar(25), market_price int(12), description varchar (1500),search_count int, view_count int, auction_count int,  PRIMARY KEY (id));
 
-  CREATE TABLE all_equipment (id int NOT NULL AUTO_INCREMENT, name varchar(50), bought_price int(12), year int(4), rating int(1), dealer int, auction_para int,  PRIMARY KEY (id));
+  CREATE TABLE all_equipment (id int NOT NULL AUTO_INCREMENT, name varchar(50), bought_price int(12), year int(4), rating int(1), dealer int, auction_para int, auction int,  PRIMARY KEY (id));
 
   CREATE TABLE auction (id int NOT NULL AUTO_INCREMENT, start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, is_featured int(1), PRIMARY KEY (id));
 

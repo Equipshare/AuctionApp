@@ -142,7 +142,7 @@ module.exports = {
             } else {
             	var state = req.body.state;
                	var insertQuery = "INSERT INTO location ( city, state, dealer_count, equipment_count) values (?,?,?,?)";
-               	connection.query(insertQuery, [city, state, 0, 0],function (err, result) {
+               	connection.query(insertQuery, [city, state, 0, 0],function (err, rows) {
 				    if (err) throw err;
 				    console.log("New Location Added");
 				});
@@ -257,7 +257,7 @@ module.exports = {
             } 
             else {
                 var insertQuery = "INSERT INTO std_equipment (asset_name, model, market_price, description, search_count, view_count, auction_count) values (?,?,?,?,?,?,?)";
-                connection.query(insertQuery, [data.asset_name, data.model, data.market_price, data.description, ini_data.search_count, ini_data.view_count, ini_data.auction_count],function (err, result) {
+                connection.query(insertQuery, [data.asset_name, data.model, data.market_price, data.description, ini_data.search_count, ini_data.view_count, ini_data.auction_count],function (err, rows) {
                     if (err) throw err;
                     else {
                         console.log("New Location Added");
@@ -271,9 +271,19 @@ module.exports = {
     add_new_auction: function(req,res){
         res.render('Profiles/admin/add_new_auction', { message: '' });
     },
+
     add_new_auction_post_form: function(req, res){
-        console.log(req.body);
-        res.render('Profiles/admin/add_new_auction', { message: '' });
+        var data = req.body;
+        var insertQuery = "INSERT INTO auction (start_time, end_time, is_featured) values (?,?,?)";
+        connection.query(insertQuery, [data.start_time, data.end_time, data.is_featured],function (err, rows) {
+                if (err) throw err;
+            else {
+                console.log("New Auction Added");
+                
+                console.log(data.end_time < data.start_time);
+                res.redirect('/profile');
+            }
+        });
     },
 
 
@@ -338,7 +348,7 @@ module.exports = {
         var data = req.body;
         console.log(data);
         insertQuery = "INSERT INTO all_equipment (name, bought_price, year, rating, dealer, auction_para) values (?,?,?,?,?,?)";
-        connection.query(insertQuery,[data.name, data.bought_price, data.year, data.rating, id, 0], function(err, rows){
+        connection.query(insertQuery,[data.name, data.bought_price, data.year, data.rating, id, data.auction_para], function(err, rows){
             if (err){
                 throw err;
             }
