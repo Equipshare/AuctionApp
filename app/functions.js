@@ -8,6 +8,9 @@ connection.query('USE ' + dbconfig.database);
 // //=================================================
 
 var ssn;//variable of session
+var schedule = require('node-schedule');
+var moment = require('moment');
+
 
 module.exports = {
 
@@ -269,19 +272,32 @@ module.exports = {
     },
 
     add_new_auction: function(req,res){
-        res.render('Profiles/admin/add_new_auction', { message: '' });
+        res.render('Profiles/admin/add_new_auction.ejs', { message: '' });
     },
 
     add_new_auction_post_form: function(req, res){
         var data = req.body;
-        var insertQuery = "INSERT INTO auction (start_time, end_time, is_featured) values (?,?,?)";
-        connection.query(insertQuery, [data.start_time, data.end_time, data.is_featured],function (err, rows) {
-                if (err) throw err;
+        var selectquery = "Select * from auction WHERE ( (? > start_time AND ? < end_time) OR (? > start_time AND ? < end_time) )"
+
+        connection.query(selectquery,[data.start_time, data.start_time, data.end_time, data.end_time], function(err, rows){
+            console.log(rows);
+            if(err) throw err;
+            else if(rows.length){
+                req.flash('newAuctionMessage', 'That Auction Timings clashes with another Auction');
+                res.render('Profiles/admin/add_new_auction.ejs', { message: req.flash('newAuctionMessage') });
+            }
             else {
-                console.log("New Auction Added");
-                
-                console.log(data.end_time < data.start_time);
-                res.redirect('/profile');
+                var insertQuery = "INSERT INTO auction (start_time, end_time, is_featured) values (?,?,?)";
+                connection.query(insertQuery, [data.start_time, data.end_time, data.is_featured],function (err, rows) {
+                        if (err) throw err;
+                    else {
+                        console.log("New Auction Added");
+
+                        //Schedule task here;
+
+                        res.redirect('/dashboard');
+                    }
+                });
             }
         });
     },
@@ -357,6 +373,72 @@ module.exports = {
                 res.redirect('/profile');
             }
         });
+    },
+
+    dealer_my_equipment: function(req,res){
+        selectQuery = "select * from all_equipment where dealer = ?";
+        connection.query(selectQuery,[req.session.passport.user], function(err, rows){
+            if (err){
+                throw err;
+            }
+            else {
+                res.render('Profiles/dealer/my_equipment.ejs', {user: rows});
+            }
+        });
+    },
+
+    change_auction_status: function(req, res){
+        var data = req.body;
+        if(data.mini_bid == ''){
+            data.mini_bid = 0;
+        }
+        next_auction( function(result) {
+            console.log(result);
+            updatequery = "UPDATE all_equipment SET auction_para = NOT auction_para, auction = ?, mini_bid = ? where id = ?";
+            connection.query(updatequery, [result[0].id, data.mini_bid, data.id], function(err, rows){
+                if (err){
+                    throw err;
+                }
+                else {
+                    res.redirect('/dealer_my_equipment');
+                }
+            });
+        });
+        
     }
 }
 
+//=================================================================================================
+
+function timefromnow (a) {
+    var time = moment(a, moment.HTML5_FMT.DATETIME_LOCAL);
+    var current = moment();
+    console.log(time.diff(current, 'hours'));
+
+    return time.diff(current, 'hours');
+}
+
+
+function next_auction(callback){
+    selectquery = "SELECT * from auction WHERE start_time > NOW() ORDER BY start_time ASC";
+    connection.query(selectquery, function(err,rows){
+        if(err) throw err;
+        else if(!rows.length){
+            return null;
+        }
+        else {
+            callback(rows);
+        }
+    });
+}
+
+function current_auction(){
+    selectquery2 = "SELECT * from auction WHERE (start_time < NOW() AND end_time > NOW())"
+    connection.query(selectquery2, function(err,rows){
+        if(err) throw err;
+        else {
+            console.log(rows[0].id)
+            return rows[0].id
+        }
+    });
+}

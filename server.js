@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs'); // set up ejs for templating
+app.set('bid_para', 1);
 
 // required for passport
 app.use(session({ secret: "winteriscoming" })); // session secret

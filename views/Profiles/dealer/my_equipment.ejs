@@ -1,0 +1,41 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>My Equipments</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+		<h1>My Equipments</h1>
+			<% for(var i=0; i < user.length; i++) { %>
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<strong>id</strong>: <%= user[i].id %><br>
+						<strong>name</strong>: <%= user[i].name %><br>
+						<strong>Bought price</strong>: <%= user[i].bought_price %><br>
+						<strong>year</strong>: <%= user[i].year %><br>
+						<strong>rating</strong>: <%= user[i].rating %><br>
+						<strong>Auction_para</strong>: <%= user[i].auction_para %><br>
+						<strong>Auction</strong>: <%= user[i].auction %><br>
+						<strong>minimum Bid</strong>: <%= user[i].mini_bid %><br>
+						<strong>next_bid</strong>: <%= user[i].next_bid %><br>
+						<form action="/change_auction_status" method="post">
+							Change Auction Status:
+							<div class="form-group">
+								<label>Minimum Bid</label>
+								<input type="number" class="form-control" name="mini_bid">  <!-- Don't show this if auction_para = 1 -->
+							</div>
+							<button name="id" type="submit" value= <%= user[i].id %> >Change Auction Status</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+	</div>
+</body>
+</html>
