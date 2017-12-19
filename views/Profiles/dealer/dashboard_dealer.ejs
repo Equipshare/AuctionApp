@@ -5,25 +5,34 @@
 	<title>After Admin User</title>
 </head>
 <body>
+
+	<!-- PHP method to validate the form.  -->
+
+
 	<div>
 		<%- include header.ejs %>
 		<div class="main">
 		<h1>All Equipment</h1>
 			<% for(var i=0; i < user.length; i++) { %>
-			<div class="row">
-				<!-- LOCAL INFORMATION -->
-				<div class="col-sm-6">
-					<div class="well">
-						<i class="fa fa-car fa-3x" aria-hidden="true"></i>
-						<strong>name</strong>: <%= user[i].name %><br>
-						<strong>year</strong>: <%= user[i].year %><br>
-						<strong>Bought Price</strong>: <%= user[i].bought_price %><br>
-						<strong>rating</strong>: <%= user[i].rating %><br>
-						<strong>Dealer</strong>: <%= user[i].dealer %><br>
-						<strong>Available</strong>: <%= user[i].auction_para %><br>
+				<div class="row">
+					<!-- LOCAL INFORMATION -->
+					<div class="col-sm-6">
+						<div class="well">
+							<i class="fa fa-car fa-3x" aria-hidden="true"></i>
+							<strong>all-info</strong>: <%= JSON.stringify(user[i], null, "  ") %><br>
+							<form action="/add_new_bid" method="post">
+								Bid on this:
+								<div class="form-group">
+									<label>Your Bid</label>
+									<input type="number" class="form-control" name="new_bid"> 
+									<input name="equip_id" type="hidden" value= <%= user[i].id %>  >
+									<input name="auction_id" type="hidden" value= <%= user[i].auction %>  >
+								</div>
+								<button type="submit">Confirm Your Bid</button>
+							</form>
+						</div>
 					</div>
 				</div>
-			</div>
 			<% } %>
 		</div>
 	</div>

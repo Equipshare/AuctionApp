@@ -101,9 +101,10 @@ module.exports = {
             category = rows[0].category;
             req.session.passport.category = category;
 
-            connection.query("SELECT * FROM all_equipment", function(err, rows){
+            selectquery = "SELECT * FROM all_equipment where (dealer != ? AND auction_para = '1')";
+            connection.query(selectquery, [userid], function(err, rows){
                 category = req.session.passport.category;
-
+                console.log()
                 if(category == 1){
                     res.render('Profiles/user/dashboard_user.ejs', {
                         user : rows // get the user out of session and pass to template
@@ -239,8 +240,7 @@ module.exports = {
             }
         });
     },
-
-    add_new_equipment: function (req,res){
+ add_new_equipment: function (req,res){
         res.render('Profiles/admin/add_new_equipment.ejs', {message: ''});
     },
     add_new_equipment_post_form: function(req,res){
@@ -370,6 +370,7 @@ module.exports = {
             }
             else {
                 console.log(rows);
+
                 res.redirect('/profile');
             }
         });
@@ -392,10 +393,11 @@ module.exports = {
         if(data.mini_bid == ''){
             data.mini_bid = 0;
         }
+
         next_auction( function(result) {
             console.log(result);
-            updatequery = "UPDATE all_equipment SET auction_para = NOT auction_para, auction = ?, mini_bid = ? where id = ?";
-            connection.query(updatequery, [result[0].id, data.mini_bid, data.id], function(err, rows){
+            updatequery = "UPDATE all_equipment SET auction_para = NOT auction_para, auction = ?, mini_bid = ?, next_bid = ? where id = ?";
+            connection.query(updatequery, [result[0].id, data.mini_bid, data.mini_bid, data.id], function(err, rows){
                 if (err){
                     throw err;
                 }
@@ -404,7 +406,24 @@ module.exports = {
                 }
             });
         });
-        
+    },
+
+    //================================================================================
+    //======================= General FUNCTIONS ======================================
+    //================================================================================
+
+    add_new_bid: function(req, res){
+        data = req.body;
+        console.log(data);
+        var id = req.session.passport.user;
+        insertQuery = "INSERT INTO bids (equip_id, auction_id, buyer_id, bid_price) values (?,?,?,?)";
+
+        connection.query(insertQuery, [data.equip_id, data.auction_id, id, data.new_bid ], function(err, req){
+            if(err) throw err;
+            else{
+                res.redirect('/profile');
+            }
+        });
     }
 }
 

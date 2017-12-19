@@ -33,6 +33,6 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
   CREATE TABLE auction (id int NOT NULL AUTO_INCREMENT, start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, is_featured int(1), PRIMARY KEY (id));
 
-
+  CREATE TABLE bids (id int NOT NULL AUTO_INCREMENT, equip_id int, auction_id int, buyer_id int, PRIMARY KEY (id));
 , 
 */

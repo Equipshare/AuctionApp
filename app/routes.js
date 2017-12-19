@@ -81,4 +81,12 @@ module.exports = function(app, passport) {
     app.post('/add_car', functions.isLoggedInfunc, functions.add_car_post_form);
     app.get('/dealer_my_equipment', functions.isLoggedInfunc, functions.dealer_my_equipment); 
     app.post('/change_auction_status', functions.isLoggedInfunc, functions.change_auction_status);
+
+
+    //================================================================================
+    //======================== General Routes ========================================
+    //================================================================================
+
+    app.post('/add_new_bid', functions.isLoggedInfunc, functions.add_new_bid);
+
 }
