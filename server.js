@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs'); // set up ejs for templating
-app.set('bid_para', 1);
+app.set('bid_para', 0);  //initial bid parameter
 
 // required for passport
 app.use(session({ secret: "winteriscoming" })); // session secret
@@ -38,6 +38,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+// require('./app/functions.js')(app);
 
 // launch ======================================================================
 app.listen(port);

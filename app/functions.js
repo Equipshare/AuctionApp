@@ -11,6 +11,9 @@ var ssn;//variable of session
 var schedule = require('node-schedule');
 var moment = require('moment');
 
+var express  = require('express');
+var app = express();
+
 
 module.exports = {
 
@@ -294,6 +297,19 @@ module.exports = {
                         console.log("New Auction Added");
 
                         //Schedule task here;
+                        var auction_start_schedule = schedule.scheduleJob(data.start_time, function(){
+                            console.log('The world is going to end today.');
+                            app.set('bid_para', 1);
+                            console.log("Auction started, now bidding = " + app.settings.bid_para);
+
+                        });
+
+                        var auction_end_schedule = schedule.scheduleJob(data.end_time, function(){
+                            console.log('The world is going to end today.');
+                            app.set('bid_para', 0);
+                            console.log("Auction ended, now bidding = " + app.settings.bid_para);
+                        });
+
 
                         res.redirect('/dashboard');
                     }
@@ -416,6 +432,7 @@ module.exports = {
         data = req.body;
         console.log(data);
         var id = req.session.passport.user;
+        
         insertQuery = "INSERT INTO bids (equip_id, auction_id, buyer_id, bid_price) values (?,?,?,?)";
 
         connection.query(insertQuery, [data.equip_id, data.auction_id, id, data.new_bid ], function(err, req){
@@ -428,14 +445,6 @@ module.exports = {
 }
 
 //=================================================================================================
-
-function timefromnow (a) {
-    var time = moment(a, moment.HTML5_FMT.DATETIME_LOCAL);
-    var current = moment();
-    console.log(time.diff(current, 'hours'));
-
-    return time.diff(current, 'hours');
-}
 
 
 function next_auction(callback){
@@ -451,13 +460,3 @@ function next_auction(callback){
     });
 }
 
-function current_auction(){
-    selectquery2 = "SELECT * from auction WHERE (start_time < NOW() AND end_time > NOW())"
-    connection.query(selectquery2, function(err,rows){
-        if(err) throw err;
-        else {
-            console.log(rows[0].id)
-            return rows[0].id
-        }
-    });
-}
