@@ -2,9 +2,12 @@
 // Loads up config for connection
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
-var connection = mysql.createConnection(dbconfig.connection);
+var connection = mysql.createConnection(dbconfig.connection, {multipleStatements: true});
 
 connection.query('USE ' + dbconfig.database);
+// connection.config.multipleStatements = true;
+// console.log(connection.config.multipleStatements);
+
 // //=================================================
 
 var ssn;//variable of session
@@ -308,6 +311,8 @@ module.exports = {
                             console.log('The world is going to end today.');
                             app.set('bid_para', 0);
                             console.log("Auction ended, now bidding = " + app.settings.bid_para);
+
+                            // ADD ALLOCATION TO AUCTION
                         });
 
 
@@ -399,7 +404,7 @@ module.exports = {
                 throw err;
             }
             else {
-                res.render('Profiles/dealer/my_equipment.ejs', {user: rows});
+                res.render('Profiles/dealer/my_equipment.ejs', {user: rows, message: ''});
             }
         });
     },
@@ -432,15 +437,31 @@ module.exports = {
         data = req.body;
         console.log(data);
         var id = req.session.passport.user;
-        
-        insertQuery = "INSERT INTO bids (equip_id, auction_id, buyer_id, bid_price) values (?,?,?,?)";
-
-        connection.query(insertQuery, [data.equip_id, data.auction_id, id, data.new_bid ], function(err, req){
-            if(err) throw err;
-            else{
-                res.redirect('/profile');
-            }
-        });
+        if(!app.get('bid_para')){
+            // message to flash message that no Auction is running
+            res.redirect('/dashboard');
+        }
+        else if(data.new_bid < data.mini_bid){
+            //message to flash that you must bid higher than mini bid
+            res.redirect('/dashboard');
+        }
+        else {
+            data.equip_id = Number(data.equip_id);
+            data.next_bid = Number(data.new_bid) + 1000;
+            console.log(connection.config.multipleStatements);
+            insertQuery = "INSERT INTO bids (equip_id, auction_id, buyer_id, bid_price) values (?,?,?,?)";
+            connection.query(insertQuery, [data.equip_id, data.auction_id, id, data.new_bid], function(err, req, fields){
+                if(err) throw err;
+                else{
+                    updatequery = "UPDATE all_equipment SET next_bid = ? where id = ?"
+                    connection.query(updatequery, [data.next_bid, data.equip_id], function(err,req){
+                        
+                        console.log(app.get('bid_para'));
+                        res.redirect('/dashboard');
+                    });
+                }
+            });
+        }
     }
 }
 
