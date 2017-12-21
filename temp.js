@@ -23,7 +23,7 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
   CREATE TABLE location (sno int NOT NULL AUTO_INCREMENT, city varchar(255) NOT NULL, state varchar(255) NOT NULL, dealerdealer_count int(16), equipment_count int(64), PRIMARY KEY (sno));
 
-  CREATE TABLE admin (id int(5), location int(5), boss_id int(5);
+  CREATE TABLE admin (id int(5), location int(5), boss_id int(5) );
   
   CREATE TABLE dealer (id int(5), location int(5), pan_number varchar(25), GST_number varchar(25), deal_count int(6), total_asset int(7), req_stat int(1));
 
@@ -34,5 +34,7 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
   CREATE TABLE auction (id int NOT NULL AUTO_INCREMENT, start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, is_featured int(1), PRIMARY KEY (id));
 
   CREATE TABLE bids (id int NOT NULL AUTO_INCREMENT, equip_id int, auction_id int, buyer_id int, bid_price int, PRIMARY KEY (id));
+
+  CREATE TABLE enquiry ( sender_id int, reciever_id int, description varchar(200) );
 , 
 */

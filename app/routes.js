@@ -69,6 +69,7 @@ module.exports = function(app, passport) {
     app.post('/add_new_equipment', functions.isLoggedInfunc, functions.add_new_equipment_post_form);
     app.get('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction);
     app.post('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction_post_form);
+    app.post('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form);
 
 
     //================================================================================

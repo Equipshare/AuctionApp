@@ -246,9 +246,11 @@ module.exports = {
             }
         });
     },
- add_new_equipment: function (req,res){
+    
+    add_new_equipment: function (req,res){
         res.render('Profiles/admin/add_new_equipment.ejs', {message: ''});
     },
+    
     add_new_equipment_post_form: function(req,res){
         data = req.body;
         ini_data = {
@@ -323,7 +325,13 @@ module.exports = {
         });
     },
 
+    enquiry_form: function(req, res){
+        res.render('/Profiles/admin/enquiry_form.ejs');
+    },
 
+    enquiry_form_post_form : function(req, res){
+        
+    },
 
     //================================================================================
     //======================= Dealer FUNCTIONS =======================================
