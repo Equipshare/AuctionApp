@@ -67,6 +67,7 @@ module.exports = {
 
     // route middleware to make sure
 	isLoggedInfunc: function isLoggedIn(req, res, next) {
+        return next();
 	    // if user is authenticated in the session, carry on
 	    if (req.isAuthenticated())
 	        return next();
@@ -255,19 +256,26 @@ module.exports = {
     },
 
     existing_user: function(req,res){
-    	connection.query("SELECT * FROM account", function(err, rows){
+        selectquery = "select * from ( select  * FROM (select * from admin order by boss_id, id) products_sorted, (select @pv := ?) initialisation where find_in_set(boss_id, @pv) > 0 and @pv := concat(@pv, ',', id) ) a, account b where a.id = b.id";
+    	connection.query(selectquery, [req.session.passport.user], function(err, rows){
     		if (err){
                 throw err;
     		}
     		else if (!rows.length) {
-    			req.flash('newLocationMessage', 'Please add a location to view');
-    			res.render('signup.ejs', { message: req.flash('newLocationMessage') });
+    			req.flash('newLocationMessage', 'No User is working Under you');
+    			res.render('Profiles/admin/dashboard_admin.ejs', { message: req.flash('newLocationMessage') });
     		}
     		else {
+                // showquery = "select * from account a, admin b where a.id = b.id"
+                // // connection.query(showquery, [rows], function(err, rows){
+                    // console.log(rows);
+                    // res.status(200).json(rows);
+                // });
+
+
     			res.render('Profiles/admin/existing_user.ejs', {
 	                    user : rows // get the user out of session and pass to template
 	                });
-    			console.log(rows);
     		}
     	});
     },
@@ -421,7 +429,6 @@ module.exports = {
                 }
             } );
         });
-
     },
 
     //================================================================================
