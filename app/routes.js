@@ -2,6 +2,11 @@
 
 var functions = require('./functions')
 
+
+// var dbconfig = require('./../config/database');
+// var connection = mysql.createConnection(dbconfig.connection);
+
+// connection.query('USE ' + dbconfig.database);
 // ==========================================
 module.exports = function(app, passport) {
 
@@ -55,6 +60,16 @@ module.exports = function(app, passport) {
 
     app.get('/wallet',functions.isLoggedInfunc, functions.walletfunc);
 
+    //this is post for forgot password which requires user's email id
+    app.post('/forgot', functions.forgot);
+
+    //this route will verify the password token hasn't expire and returns a json response
+    app.get('/reset/:token', functions.reset_pass);
+
+    //POST for password reset and if token hasn't expired, the password of user is reset.
+    app.post('/reset/:token', functions.reset_pass_post_form);
+
+
     //================================================================================
     //======================= ADMIN ROUTES ===========================================
     //================================================================================
@@ -71,7 +86,8 @@ module.exports = function(app, passport) {
     app.post('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction_post_form);
     app.get('/existing_dealers', functions.isLoggedInfunc, functions.existing_dealers);
     app.post('/existing_dealers', functions.isLoggedInfunc, functions.existing_dealers);
-
+    app.get('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form);
+    app.post('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form_post_form);
 
 
     //================================================================================

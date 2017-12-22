@@ -13,6 +13,7 @@
 		<%- include header.ejs %>
 		<div class="main">
 		<h1>All Equipment</h1>
+
 			<% for(var i=0; i < user.length; i++) { %>
 				<div class="row">
 					<!-- LOCAL INFORMATION -->
@@ -27,6 +28,7 @@
 									<input type="number" class="form-control" name="new_bid"> 
 									<input name="equip_id" type="hidden" value= <%= user[i].id %>  >
 									<input name="auction_id" type="hidden" value= <%= user[i].auction %>  >
+									<input name="next_bid" type="hidden" value= <%= user[i].next_bid %>  >
 								</div>
 								<button type="submit">Confirm Your Bid</button>
 							</form>

@@ -8,3 +8,6 @@ module.exports = {
 	'database': 'eqsAuction',
     'users_table': 'account'
 };
+
+
+// hjsdhajhdajhdjahkjdshkj
