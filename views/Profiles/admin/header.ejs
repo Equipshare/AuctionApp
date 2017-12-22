@@ -45,10 +45,51 @@
 	  .sidenav {padding-top: 15px;}
 	  .sidenav a {font-size: 18px;}
 	}
+
+
+	.dropdown {
+	    position: relative;
+	    display: inline-block;
+	}
+
+	.dropdown-content {
+	    display: none;
+	    position: absolute;
+	    background-color: #f9f9f9;
+	    min-width: 160px;
+	    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	    padding: 12px 16px;
+	    z-index: 1;
+	}
+
+	.dropdown:hover .dropdown-content {
+	    display: block;
+	}
+
 	</style>
 </head>
 
 <body>
+
+	<script>
+	/* When the user clicks on the button, 
+	toggle between hiding and showing the dropdown content */
+	function myFunction() {
+	    document.getElementById("myDropdown").classList.toggle("show");
+	}
+
+	// Close the dropdown if the user clicks outside of it
+	window.onclick = function(e) {
+	  if (!e.target.matches('.dropbtn')) {
+	    var myDropdown = document.getElementById("myDropdown");
+	      if (myDropdown.classList.contains('show')) {
+	        myDropdown.classList.remove('show');
+	      }
+	  }
+	}
+	</script>
+
+
 	<div class="sidenav">
 		<a href = "">Dashboard</a>
 	 	<a href="#">Dealers</a>
@@ -88,12 +129,27 @@
 
 	    	<ul class="nav navbar-nav navbar-right">
 	    		<li class="active"><a href="#"><i class="fa fa-home" aria-hidden="true"></i>  Home</a></li>
-	      		<li><a href="/cookie"><i class="fa fa-bell" aria-hidden="true"> Notifications</i></a></li>
+
+	    		<li>
+	    		<div class="dropdown">
+				 	<button class="dropbtn" onclick="myFunction()">
+				    	<i class="fa fa-bell" aria-hidden="true"> Notifications</i>
+						<i class="fa fa-caret-down"></i>
+				    </button>
+				  	<div class="dropdown-content">
+						<a href="#">Notification 1</a>
+						<a href="#">Notification 2</a>
+						<a href="#">Notification 3</a>
+			    </div>
+				</li>
+
 	      		<li><a href="/profile"><i class="fa fa-user" aria-hidden="true">  My Profile</i></a></li>
 	      		<li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true">  Logout</i></a></li>
 	    	</ul>
 	  	</div>
 	</nav>
+
+
 
 </body>
 </html>

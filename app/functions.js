@@ -5,18 +5,29 @@ var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection, {multipleStatements: true});
 
 connection.query('USE ' + dbconfig.database);
+
+const notifier = require('node-notifier');
+
 // connection.config.multipleStatements = true;
 // console.log(connection.config.multipleStatements);
+
+var nodemailer = require('nodemailer');
+ var bcrypt = require('bcrypt-nodejs');
+
 
 // //=================================================
 
 var ssn;//variable of session
 var schedule = require('node-schedule');
-var moment = require('moment');
 
 var express  = require('express');
 var app = express();
+var crypto = require('crypto');
 
+
+var bid_para = 1;
+
+// //=================================================
 
 module.exports = {
 
@@ -130,6 +141,69 @@ module.exports = {
         });
     },
 
+    forgot: function(req, res){
+        var userid = req.body.username;
+        selectquery = "SELECT * from account where username = ?";
+        connection.query(selectquery, [userid], function(err, rows){
+            console.log(rows);
+
+            if(err)throw err;
+            else if(!rows.length){
+                res.send("no user with this username exists");
+            }
+            else {
+                genrate_mail(req, rows);
+                res.send("A mail has been send to your email-id")
+            }
+        })
+    },
+
+
+    reset_pass: function(req, res) {
+        selectquery = "SELECT * from account where resetPasswordToken = ? AND resetPasswordExpire > NOW()"
+        connection.query(selectquery,[req.params.token], function(err, rows) {
+            if (!rows.length) {
+                var result = {
+                    err:true,
+                    msg:'Password reset token is invalid or has expired.'
+                }
+                return res.status(200).json(result);
+            }
+            var result = {
+                message:"reset your password", 
+                user:rows[0]
+            }
+            res.render('forgot-password.ejs', result);
+        });
+    },
+
+
+
+    reset_pass_post_form : function(req, res){
+        selectquery = "SELECT * from account where resetPasswordToken = ? AND resetPasswordExpire > NOW()";
+        console.log(req.params);
+        connection.query(selectquery,[req.params.token], function(err, rows) {
+            if(err)throw err;
+            else if(!rows.length){
+                var result = {
+                    msg:"this token has expired"
+                }
+                return res.status(200).json(result);
+            }
+
+            console.log(rows);
+            console.log(req.body);
+            password = bcrypt.hashSync(req.body.password, null, null)
+            resetPasswordExpire = undefined;
+            resetPasswordToken = undefined;
+            updatequery = "UPDATE account set password = ?, resetPasswordToken = ?, resetPasswordExpire = ? WHERE username = ?";
+            connection.query(updatequery, [password, resetPasswordToken, resetPasswordExpire, rows[0].username], function(err, rows){
+                if(err)throw err;
+                res.status(200).json({a: rows, b : " Your password has been reset."});
+            });
+        });
+    },
+
     //================================================================================
     //======================= ADMIN FUNCTIONS ========================================
     //================================================================================
@@ -232,15 +306,17 @@ module.exports = {
                 var category = 3;
                 var wallet = 0;
 	            connection.query(insertQuery1,[data.username, data.password, category, data.email, data.mobile, wallet, data.address], function(err, rows) {
-
+                    console.log(rows);
 	            	if (err){
                 		throw err;
     				}
     				else {
 	            	var insertQuery2 = "INSERT INTO admin ( id, location, boss_id) values (?,?,?)";
-	            	connection.query(insertQuery2,[rows.insertId, data.location, req.session.passport.user], function(err, rows) {
-		            	res.redirect('/profile');
-	            	});
+	            	connection.query(insertQuery2,[rows.insertId, data.location, req.session.passport.user]);
+                    connection.query("SELECT * from account WHERE username = ?", [data.username], function(err, rows){
+                        genrate_mail(req, rows);
+                        res.redirect('/profile');
+                    });
 	            	}
 	            });
             }
@@ -304,14 +380,14 @@ module.exports = {
                         //Schedule task here;
                         var auction_start_schedule = schedule.scheduleJob(data.start_time, function(){
                             console.log('The world is going to end today.');
-                            app.set('bid_para', 1);
+                            bid_para = 1;
                             console.log("Auction started, now bidding = " + app.settings.bid_para);
 
                         });
 
                         var auction_end_schedule = schedule.scheduleJob(data.end_time, function(){
                             console.log('The world is going to end today.');
-                            app.set('bid_para', 0);
+                            bid_para = 0;
                             console.log("Auction ended, now bidding = " + app.settings.bid_para);
 
                             // ADD ALLOCATION TO AUCTION
@@ -326,11 +402,26 @@ module.exports = {
     },
 
     enquiry_form: function(req, res){
-        res.render('/Profiles/admin/enquiry_form.ejs');
+        res.render('Profiles/admin/enquiry_form.ejs', {message: ''});
     },
 
     enquiry_form_post_form : function(req, res){
-        
+        var data = req.body;
+        var user = req.session.passport.user;
+        var category = req.session.passport.category;
+
+        selectquery = "SELECT boss_id from admin where id = ?"
+        connection.query(selectquery, [user], function(err, rows){
+            console.log(rows);
+
+            connection.query("INSERT INTO enquiry (sender_id, reciever_id, description, subject) values (?,?,?,?)",[user, rows[0].boss_id, data.description, data.subject], function(err, rows){
+                if(err) throw err;
+                else{
+                    res.render('Profiles/admin/enquiry_form.ejs', { message: 'your enquiry is submitted'});
+                }
+            } );
+        });
+
     },
 
     //================================================================================
@@ -445,27 +536,31 @@ module.exports = {
         data = req.body;
         console.log(data);
         var id = req.session.passport.user;
-        if(!app.get('bid_para')){
+        if(!bid_para){
             // message to flash message that no Auction is running
+            console.log('no Auction running' + bid_para);
             res.redirect('/dashboard');
         }
-        else if(data.new_bid < data.mini_bid){
+        else if(data.new_bid < data.next_bid){
             //message to flash that you must bid higher than mini bid
+            console.log('smaller than mini bid');
+
             res.redirect('/dashboard');
         }
         else {
             data.equip_id = Number(data.equip_id);
             data.next_bid = Number(data.new_bid) + 1000;
-            console.log(connection.config.multipleStatements);
             insertQuery = "INSERT INTO bids (equip_id, auction_id, buyer_id, bid_price) values (?,?,?,?)";
             connection.query(insertQuery, [data.equip_id, data.auction_id, id, data.new_bid], function(err, req, fields){
                 if(err) throw err;
                 else{
-                    updatequery = "UPDATE all_equipment SET next_bid = ? where id = ?"
+                    updatequery = "UPDATE all_equipment SET next_bid = ? where id = ?";
                     connection.query(updatequery, [data.next_bid, data.equip_id], function(err,req){
-                        
+                        if(err) throw err;
+                        else{
                         console.log(app.get('bid_para'));
                         res.redirect('/dashboard');
+                        }
                     });
                 }
             });
@@ -489,3 +584,43 @@ function next_auction(callback){
     });
 }
 
+
+
+function genrate_mail(req, rows) {
+    // body...
+
+    crypto.randomBytes(20, function(err, buf){
+        if(err)throw err;
+        var token = buf.toString('hex');
+
+        updatequery = "UPDATE account SET resetPasswordToken = ?, resetPasswordExpire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE username = ?";
+
+        connection.query(updatequery, [token, rows[0].username], function(err, rows){
+            console.log(rows);
+            if(err) throw err;
+            else return rows;
+            });
+
+
+        var smtpTransport = nodemailer.createTransport({
+            host:'smtp.ethereal.email',
+            port: 587,
+            auth:{
+                user:'c74kurqre2vnhdim@ethereal.email',
+                pass:'X3Msz17xGCs2AA2sBA'
+            }
+        });
+
+        var mailOptions = {
+            to:rows[0].email,
+            from:'passwordreset@demo.com',
+            subject:'Auction password reset',
+            text:'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+            'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+            'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+        };
+        smtpTransport.sendMail(mailOptions);
+        console.log('MAIL SEND');
+    });
+}

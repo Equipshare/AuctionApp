@@ -1,0 +1,42 @@
+<!-- views/Profiles/new_location.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Add new Equipment</title>
+</head>
+<body>
+<div>
+	<%- include header.ejs %>
+	<div class="main">
+		<div class="row">
+			<!-- LOCAL INFORMATION -->
+			<div class="col-sm-6">
+				<div class="well">
+					<h3><span class="fa fa-user"></span>New Enquiry</h3>
+					<p>
+					<!-- show any messages that come back with authentication -->
+					<% if (message.length > 0) { %>
+						<div class="alert alert-danger"><%= message %></div>
+					<% } %>
+
+					<!-- NEW ADMIN FORM -->
+					<form action="/enquiry_form" method="post">
+						<div class="form-group">
+							<label>Subject</label>
+							<input type="text" class="form-control" name="subject">
+						</div>
+						<div class="form-group">
+							<label>Description</label>
+							<textarea rows="4" cols="50" class="form-control" name="description"></textarea>
+						</div>
+						<button type="submit" class="btn btn-warning btn-lg">Send Enquiry</button>
+					</form>
+					</p>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+</html>
