@@ -2,12 +2,7 @@
 // Loads up config for connection
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
-<<<<<<< HEAD
 var connection = mysql.createConnection(dbconfig.connection);
-var delay=require("delay");
-=======
-var connection = mysql.createConnection(dbconfig.connection, {multipleStatements: true});
->>>>>>> 9bdfdf83b0f2e1dc1b71c05c62d0a39c14a759f7
 
 connection.query('USE ' + dbconfig.database);
 
