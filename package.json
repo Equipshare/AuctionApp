@@ -2,9 +2,10 @@
   "name": "equipshare",
   "version": "1.0.0",
   "description": "Auctioning Platform",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server"
   },
   "keywords": [
     "express"
@@ -21,6 +22,7 @@
     "body-parser": "^1.18.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
+    "delay": "^2.0.0",
     "crypto": "^1.0.1",
     "ejs": "^2.5.7",
     "express-session": "^1.15.6",

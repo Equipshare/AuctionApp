@@ -84,12 +84,10 @@ module.exports = function(app, passport) {
     app.post('/add_new_equipment', functions.isLoggedInfunc, functions.add_new_equipment_post_form);
     app.get('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction);
     app.post('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction_post_form);
+    app.get('/existing_dealers', functions.isLoggedInfunc, functions.existing_dealers);
+    app.post('/existing_dealers', functions.isLoggedInfunc, functions.existing_dealers);
     app.get('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form);
     app.post('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form_post_form);
-
-
-
-
 
 
     //================================================================================
@@ -102,8 +100,10 @@ module.exports = function(app, passport) {
     app.post('/add_car', functions.isLoggedInfunc, functions.add_car_post_form);
     app.get('/dealer_my_equipment', functions.isLoggedInfunc, functions.dealer_my_equipment); 
     app.post('/change_auction_status', functions.isLoggedInfunc, functions.change_auction_status);
-
-
+    app.get('/dealer_purchase', functions.isLoggedInfunc, functions.dealer_purchase);
+    app.post('/dealer_purchase',functions.isLoggedInfunc, functions.dealer_purchase_post_form);
+    // app.get('/next_auction',functions.isLoggedInfunc, functions.profile);
+    //app.post('/next_auction',functions.isLoggedInfunc, functions.dashboard);
     //================================================================================
     //======================== General Routes ========================================
     //================================================================================

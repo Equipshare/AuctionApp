@@ -1,0 +1,102 @@
+
+<!doctype html>
+<html>
+<head>
+	<title>Purchase Request</title>
+</head>
+<body>
+<div>
+	
+	<div class="main">
+		<div class="row">
+			<!-- LOCAL INFORMATION -->
+			<div class="col-sm-6">
+				<div class="well">
+					<h3><span class="fa fa-user"></span>Purchase Request</h3>
+					<p>
+					
+					<form action="/dealer_purchase" method="post">
+						<div class="form-group">
+							<label>Name of Buyer</label>
+							<input type="text" class="form-control" name="name">
+						</div>
+						<div class="form-group">
+							<label>Contact Number</label>
+							<input type="number" class="form-control" name="contact">
+						</div>
+						<div class="form-group">
+							<label>Address</label>
+							<input type="text" class="form-control" name="address">
+						</div>
+						<div class = "form-group">
+							<label>Select Vehicle Type</label>
+							<select name = "type" type="text" class="form-control">
+							 	  <option value= 1>Luxury</option>
+								  <option value= 2>Mini Van</option>
+								  <option value= 3>SUV</option>
+								  <option value= 4>Utility</option>
+								  <option value= 5>Others</option>
+							</select>
+						</div>
+						<div class = "form-group">
+							<label>Preference 1</label>
+							<select name = "pref_1" type="text" class="form-control">
+							 	  <option value= 1>1</option>
+								  <option value= 2>2</option>
+								  <option value= 3>3</option>
+								  <option value= 4>4</option>
+								  <option value= 5>5</option>
+							</select>
+						</div>
+						<div class = "form-group">
+							<label>Preference 2</label>
+							<select name = "pref_2" type="text" class="form-control">
+							 	  <option value= 1>1</option>
+								  <option value= 2>2</option>
+								  <option value= 3>3</option>
+								  <option value= 4>4</option>
+								  <option value= 5>5</option>
+							</select>
+						</div>
+						<div class = "form-group">
+							<label>Preference 3</label>
+							<select name = "pref_3" type="text" class="form-control">
+							 <option value= 1>1</option>
+								  <option value= 2>2</option>
+								  <option value= 3>3</option>
+								  <option value= 4>4</option>
+								  <option value= 5>5</option>
+							</select>
+						</div>
+						<div class = "form-group">
+							<label>Preference 4</label>
+							<select name = "pref_4" type="text" class="form-control">
+							 <option value= 1>1</option>
+								  <option value= 2>2</option>
+								  <option value= 3>3</option>
+								  <option value= 4>4</option>
+								  <option value= 5>5</option>
+							</select>
+						</div>
+						<div class = "form-group">
+							<label>Range</label>
+							<select name = "m_range" type="text" class="form-control">
+							 	  <option value= 1>1.5-2.5 lakhs</option>
+								  <option value= 2>2.5-4 lakhs</option>
+								  <option value= 3>4-6 lakhs</option>
+								  <option value= 4>6-9 lakhs</option>
+								  <option value= 5>9+ lakhs</option>
+							</select>
+						</div>
+						
+						<button type="submit" class="btn btn-warning btn-lg">Confirm</button>
+					</form>
+					</p>
+						
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+</html>
