@@ -3,6 +3,7 @@
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection);
+var delay=require("delay");
 
 connection.query('USE ' + dbconfig.database);
 // //=================================================
@@ -193,6 +194,24 @@ module.exports = {
     			console.log(rows);
     		}
     	});
+    },
+
+    existing_dealers: function(req,res){
+        connection.query("SELECT * FROM account WHERE category = 2", function(err, rows){
+            if (err){
+                throw err;
+            }
+            else if (!rows.length) {
+                req.flash('newLocationMessage', 'Please add a location to view');
+                res.render('signup.ejs', { message: req.flash('newLocationMessage') });
+            }
+            else {
+                res.render('Profiles/admin/existing_dealers.ejs', {
+                        user : rows // get the user out of session and pass to template
+                    });
+                console.log(rows);
+            }
+        });
     },
 
     add_new_admin: function(req,res){
@@ -404,7 +423,65 @@ module.exports = {
         });
     },
 
-    change_auction_status: function(req, res){
+
+    dealer_purchase: (req,res)=>{
+        selectQuery = "";//to do
+        // connection.query("SELECT id, asset_name, model FROM std_equipment", function(err, rows){
+          //  if (err){
+            //    throw err;
+            //}
+            //else {
+                res.render('Profiles/dealer/purchase_req.ejs', {
+                    user : '',
+                    message : "" // get the user out of session and pass to template
+                });
+            //}
+        //});
+    },
+
+    dealer_purchase_post_form: (req,res)=>{
+        var id=req.session.passport.user;
+        var data=req.body;
+        var purchaseid;
+
+        insertQuery = "INSERT INTO purchase_details (user_id, costumer_name, contact, address) VALUES (?,?,?,?) ";
+        connection.query(insertQuery,[id, data.name, data.contact, data.address], function(err, rows){
+            if (err){
+                throw err;
+            }else{
+                //TO DO
+                 console.log("index  "+rows.insertId);
+                 purchaseid=rows.insertId;
+                    var prefQuery = "INSERT INTO purchase_pref (purchase_id, pref_1, pref_2, pref_3, pref_4, m_range) VALUES (?,?,?,?,?,?)";
+        
+        connection.query(prefQuery,[purchaseid, data.pref_1, data.pref_2, data.pref_3, data.pref_4, data.m_range], function(err, rows){
+            if (err){
+                throw err;
+            }else{
+                res.redirect("/profile");
+            }
+    });
+            }
+        });
+            
+},
+        
+         dealer_sell : (req, res)=>{
+        console.log("DFGHJKHGFD");
+        connection.query("SELECT id, asset_name, model FROM std_equipment", function(err, rows){
+            if (err){
+                throw err;
+            }
+            else {
+                res.render('Profiles/dealer/add_car.ejs', {
+                    user : rows,
+                    message : "" // get the user out of session and pass to template
+                });
+            }
+        });
+    },
+
+       change_auction_status: function(req, res){
         var data = req.body;
         if(data.mini_bid == ''){
             data.mini_bid = 0;
@@ -445,6 +522,7 @@ module.exports = {
 }
 
 //=================================================================================================
+    
 
 
 function next_auction(callback){
