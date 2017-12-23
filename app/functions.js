@@ -274,7 +274,7 @@ module.exports = {
     },
 
     existing_dealers: function(req,res){
-        var category = req.session.passport.category;
+        var category = req.session.category;
         console.log(category);
         connection.query("SELECT * FROM account WHERE category = 2", function(err, rows){
             if (err){
