@@ -102,7 +102,9 @@ module.exports = function(app, passport) {
     app.post('/change_auction_status', functions.isLoggedInfunc, functions.change_auction_status);
     app.get('/dealer_purchase', functions.isLoggedInfunc, functions.dealer_purchase);
     app.post('/dealer_purchase',functions.isLoggedInfunc, functions.dealer_purchase_post_form);
-    // app.get('/next_auction',functions.isLoggedInfunc, functions.profile);
+    app.get('/dealer_sell', functions.isLoggedInfunc, functions.dealer_sell);
+    app.post('/dealer_sell', functions.isLoggedInfunc, functions.dealer_sell_post_form);
+    app.get('/next_auction', functions.isLoggedInfunc, functions.next_auction);
     //app.post('/next_auction',functions.isLoggedInfunc, functions.dashboard);
 
 

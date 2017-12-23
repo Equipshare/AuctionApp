@@ -1,0 +1,31 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Dealers</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+		<h1>Dealers</h1>
+			<% for(var i=0; i < user.length; i++) { %>
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<a href = <%= "/chatbox/" + user[i].id %>><strong>id</strong>: <%= user[i].id %><br>
+						<strong>username</strong>: <%= user[i].username %><br>
+						<strong>password</strong>: <%= user[i].password %><br>
+						<strong>Category</strong>: <%= user[i].category %><br>
+						<strong>email</strong>: <%= user[i].email %><br>
+						<strong>Mobile number</strong>: <%= user[i].mobile %><br>
+						<strong>Wallet</strong>: <%= user[i].wallet %><br></a>
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+	</div>
+</body>
+</html>

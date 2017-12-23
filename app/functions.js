@@ -274,6 +274,8 @@ module.exports = {
     },
 
     existing_dealers: function(req,res){
+        var category = req.session.category;
+        console.log(category);
         connection.query("SELECT * FROM account WHERE category = 2", function(err, rows){
             if (err){
                 throw err;
@@ -283,9 +285,15 @@ module.exports = {
                 res.render('signup.ejs', { message: req.flash('newLocationMessage') });
             }
             else {
+                if(category==3)
                 res.render('Profiles/admin/existing_dealers.ejs', {
                         user : rows // get the user out of session and pass to template
                     });
+                 if(category==2)
+                res.render('Profiles/dealer/chat_dealer.ejs', {
+                        user : rows // get the user out of session and pass to template
+                    });
+                else
                 console.log(rows);
             }
         });
@@ -570,16 +578,33 @@ module.exports = {
 },
         
          dealer_sell : (req, res)=>{
-        console.log("DFGHJKHGFD");
+        
         connection.query("SELECT id, asset_name, model FROM std_equipment", function(err, rows){
             if (err){
                 throw err;
             }
             else {
-                res.render('Profiles/dealer/add_car.ejs', {
+                res.render('Profiles/dealer/dealer_sell.ejs', {
                     user : rows,
-                    message : "" // get the user out of session and pass to template
+                    message : ""
                 });
+            }
+        });
+    },
+
+    dealer_sell_post_form:  function(req,res){
+        var id = req.session.passport.user;
+        var data = req.body;
+        console.log(data);
+        insertQuery = "INSERT INTO all_equipment (name, bought_price, year, rating, dealer, auction_para) values (?,?,?,?,?,?)";
+        connection.query(insertQuery,[data.name, data.bought_price, data.year, data.rating, id, data.auction_para], function(err, rows){
+            if (err){
+                throw err;//To Do: add user_name column in all_equipment table
+            }
+            else {
+                console.log(rows);
+
+                res.redirect('/profile');
             }
         });
     },
@@ -641,26 +666,31 @@ module.exports = {
                 }
             });
         }
-    }
-}
+    },
+
 
 //=================================================================================================
     
 
 
-function next_auction(callback){
-    selectquery = "SELECT * from auction WHERE start_time > NOW() ORDER BY start_time ASC";
-    connection.query(selectquery, function(err,rows){
-        if(err) throw err;
-        else if(!rows.length){
-            return null;
-        }
-        else {
-            callback(rows);
-        }
-    });
+    next_auction : (req,res)=>{
+        selectquery = "SELECT * from auction WHERE end_time > NOW() ORDER BY start_time ASC";
+        connection.query(selectquery, (err,rows)=>{
+            if(err) throw err;
+            else if(!rows.length){
+                return null;
+            }
+            else {
+                console.log(rows);
+                res.render('Profiles/dealer/live_auctions.ejs', {
+                    user : rows,
+                    message : ""
+                });
+           // callback(rows);
+            }
+        });
+    }
 }
-
 
 
 function genrate_mail(req, rows) {
