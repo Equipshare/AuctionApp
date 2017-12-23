@@ -1,0 +1,26 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html>
+<head>
+	<title>Live Auctions</title>
+</head>
+<body>
+	<div>
+		<%- include header.ejs %>
+		<div class="main">
+		<h1>Live Auctions</h1>
+			<% for(var i=0; i < user.length; i++) { %>
+			<div class="row">
+				<!-- LOCAL INFORMATION -->
+				<div class="col-sm-6">
+					<div class="well">
+						<strong>Start Time</strong>: <%= user[i].start_time %><br>
+						<strong>End Time</strong>: <%= user[i].end_time %><br>						
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+	</div>
+</body>
+</html>
