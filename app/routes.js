@@ -106,10 +106,21 @@ module.exports = function(app, passport) {
     app.post('/dealer_sell', functions.isLoggedInfunc, functions.dealer_sell_post_form);
     app.get('/next_auction', functions.isLoggedInfunc, functions.next_auction);
     //app.post('/next_auction',functions.isLoggedInfunc, functions.dashboard);
+
+
+    app.get('/notify', functions.isLoggedInfunc, function(req, res){
+        console.log(req.session);
+        res.send(req.session);
+    });
     //================================================================================
     //======================== General Routes ========================================
     //================================================================================
 
     app.post('/add_new_bid', functions.isLoggedInfunc, functions.add_new_bid);
+
+
+
+
+    
 
 }
