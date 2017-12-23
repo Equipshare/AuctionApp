@@ -46,4 +46,24 @@ serv.listen('8080', function () {
 })
 console.log('The magic happens on port ' + port);
 
+
+
+function onClientdisconnect() {
+	console.log('User disconnected with id:' + this.id);
+}
+
+function chatMessage(data){
+	console.log(data);
+	this.broadcast.emit('newChatmessage', data);
+	this.emit('newChatmessage', data);
+}	
+
+
+io.sockets.on('connection', function(socket){
+	console.log("socket connected"); 
+	socket.on('chat_message', chatMessage);
+	socket.on('disconnect', onClientdisconnect);
+	req.session.socketid = socket.id;
+});
+
 //https://scotch.io/tutorials/easy-node-authentication-setup-and-local
