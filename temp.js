@@ -19,9 +19,9 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
   });
 });
 
-  CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255), category int(4), email varchar(64), mobile int(12), wallet int(28), address varchar(255),  PRIMARY KEY (id));
+  CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255), category int(4), email varchar(64), mobile int(12), wallet int(28), address varchar(255), resetPasswordToken varchar(50), resetPasswordExpire TIMESTAMP,  PRIMARY KEY (id));
 
-  CREATE TABLE location (sno int NOT NULL AUTO_INCREMENT, city varchar(255) NOT NULL, state varchar(255) NOT NULL, dealerdealer_count int(16), equipment_count int(64), resetPasswordToken varchar(50), resetPasswordExpire TIMESTAMP, PRIMARY KEY (sno));
+  CREATE TABLE location (sno int NOT NULL AUTO_INCREMENT, city varchar(255) NOT NULL, state varchar(255) NOT NULL, dealerdealer_count int(16), equipment_count int(64), PRIMARY KEY (sno));
 
   CREATE TABLE admin (id int(5), location int(5), boss_id int(5));
   

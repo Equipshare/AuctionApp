@@ -71,7 +71,9 @@ module.exports = function(passport) {
                     connection.query(insertQuery,[newUserMysql.username, newUserMysql.password, newUserMysql.category, newUserMysql.email, newUserMysql.mobile, newUserMysql.wallet, newUserMysql.address],function(err, rows) {
                         console.log(rows.insertId);
                         newUserMysql.id = rows.insertId;
-                        category = newUserMysql.category;
+                        req.session.user = newUserMysql.id;
+                        req.session.category = newUserMysql.category;
+                        console.log(req.session);
                         return done(null, newUserMysql);
                     });
                 }
@@ -104,6 +106,10 @@ module.exports = function(passport) {
                 // if the user is found but the password is wrong
                 if (!bcrypt.compareSync(password, rows[0].password))
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+
+                req.session.user = rows[0].id;
+                req.session.category = rows[0].category;
+                console.log(req.session);
 
                 // all is well, return successful user
                 category = rows[0].category;

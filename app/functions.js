@@ -42,8 +42,8 @@ module.exports = {
     },
 
     profilefunc: function(req, res) {
-        var userid = req.session.passport.user;
-        var category = req.session.passport.category;
+        var userid = req.session.user;
+        var category = req.session.category;
         connection.query("SELECT * FROM account WHERE id = ?", [userid], function(err, rows){
 
 	        if(category == 1){
@@ -67,7 +67,7 @@ module.exports = {
 
     // route middleware to make sure
 	isLoggedInfunc: function isLoggedIn(req, res, next) {
-        return next();
+        //return next();
 	    // if user is authenticated in the session, carry on
 	    if (req.isAuthenticated())
 	        return next();
@@ -89,14 +89,12 @@ module.exports = {
 
     //Fix wallet
     walletfunc: function(req, res) {
-        var userid = req.session.passport.user;
-        var category = req.session.passport.category;
+        var userid = req.session.user;
+        var category = req.session.category;
         connection.query("SELECT * FROM account WHERE id = ?",[userid], function(err, rows){
             wallet_data = {
                 user : rows[0].wallet // send balance info.
             };
-            // if(category == 1){
-	           // res.render('Profiles/admin/wallet.ejs', wallet_data);
             switch (category) {
                 case 1:
                     res.render('Profiles/user/wallet.ejs', wallet_data);
@@ -113,32 +111,27 @@ module.exports = {
 
 
     dashboard: function(req, res){
-        var userid = req.session.passport.user;
-        var category;
-        connection.query("SELECT * FROM account WHERE id = ?", [userid], function(err, rows){
-            category = rows[0].category;
-            req.session.passport.category = category;
+        var userid = req.session.user;
+        var category = req.session.category;
+        console.log(category);
+        selectquery = "SELECT * FROM all_equipment where (dealer != ? AND auction_para = '1')";
+        connection.query(selectquery, [userid], function(err, rows){
 
-            selectquery = "SELECT * FROM all_equipment where (dealer != ? AND auction_para = '1')";
-            connection.query(selectquery, [userid], function(err, rows){
-                category = req.session.passport.category;
-                console.log()
-                if(category == 1){
-                    res.render('Profiles/user/dashboard_user.ejs', {
-                        user : rows // get the user out of session and pass to template
-                    });
-                }
-                else if(category == 2){
-                    res.render('Profiles/dealer/dashboard_dealer.ejs', {
-                        user : rows // get the user out of session and pass to template
-                    });
-                }
-                else if(category == 3){
-                    res.render('Profiles/admin/dashboard_admin.ejs', {
-                        user : rows // get the user out of session and pass to template
-                    });
-                }
-            });
+            if(category == 1){
+                res.render('Profiles/user/dashboard_user.ejs', {
+                    user : rows // get the user out of session and pass to template
+                });
+            }
+            else if(category == 2){
+                res.render('Profiles/dealer/dashboard_dealer.ejs', {
+                    user : rows // get the user out of session and pass to template
+                });
+            }
+            else if(category == 3){
+                res.render('Profiles/admin/dashboard_admin.ejs', {
+                    user : rows // get the user out of session and pass to template
+                });
+            }
         });
     },
 
@@ -257,7 +250,7 @@ module.exports = {
 
     existing_user: function(req,res){
         selectquery = "select * from ( select  * FROM (select * from admin order by boss_id, id) products_sorted, (select @pv := ?) initialisation where find_in_set(boss_id, @pv) > 0 and @pv := concat(@pv, ',', id) ) a, account b where a.id = b.id";
-    	connection.query(selectquery, [req.session.passport.user], function(err, rows){
+    	connection.query(selectquery, [req.session.user], function(err, rows){
     		if (err){
                 throw err;
     		}
@@ -338,7 +331,7 @@ module.exports = {
     				}
     				else {
 	            	var insertQuery2 = "INSERT INTO admin ( id, location, boss_id) values (?,?,?)";
-	            	connection.query(insertQuery2,[rows.insertId, data.location, req.session.passport.user]);
+	            	connection.query(insertQuery2,[rows.insertId, data.location, req.session.user]);
                     connection.query("SELECT * from account WHERE username = ?", [data.username], function(err, rows){
                         genrate_mail(req, rows);
                         res.redirect('/profile');
@@ -433,8 +426,8 @@ module.exports = {
 
     enquiry_form_post_form : function(req, res){
         var data = req.body;
-        var user = req.session.passport.user;
-        var category = req.session.passport.category;
+        var user = req.session.user;
+        var category = req.session.category;
 
         selectquery = "SELECT boss_id from admin where id = ?"
         connection.query(selectquery, [user], function(err, rows){
@@ -469,7 +462,7 @@ module.exports = {
 
     //need to remove complete my profile from
     complete_profile_post_form:  function(req,res){
-        var id = req.session.passport.user;
+        var id = req.session.user;
         var data = req.body;
         ini_data = {
             deal_count : 0,
@@ -505,7 +498,7 @@ module.exports = {
     },
 
     add_car_post_form:  function(req,res){
-        var id = req.session.passport.user;
+        var id = req.session.user;
         var data = req.body;
         console.log(data);
         insertQuery = "INSERT INTO all_equipment (name, bought_price, year, rating, dealer, auction_para) values (?,?,?,?,?,?)";
@@ -523,7 +516,7 @@ module.exports = {
 
     dealer_my_equipment: function(req,res){
         selectQuery = "select * from all_equipment where dealer = ?";
-        connection.query(selectQuery,[req.session.passport.user], function(err, rows){
+        connection.query(selectQuery,[req.session.user], function(err, rows){
             if (err){
                 throw err;
             }
@@ -550,7 +543,7 @@ module.exports = {
     },
 
     dealer_purchase_post_form: (req,res)=>{
-        var id=req.session.passport.user;
+        var id=req.session.user;
         var data=req.body;
         var purchaseid;
 
@@ -618,7 +611,7 @@ module.exports = {
     add_new_bid: function(req, res){
         data = req.body;
         console.log(data);
-        var id = req.session.passport.user;
+        var id = req.session.user;
         if(!bid_para){
             // message to flash message that no Auction is running
             console.log('no Auction running' + bid_para);

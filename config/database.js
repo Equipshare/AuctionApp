@@ -2,8 +2,8 @@
 module.exports = {
     'connection': {
         'host': 'localhost',
-        'user': 'root',
-        'password': 'qwerty'
+        'user': 'abc',
+        'password': 'Abcd@1234'
     },
 	'database': 'eqsAuction',
     'users_table': 'account'

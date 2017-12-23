@@ -2,7 +2,8 @@
 var express  = require('express');
 var app = express();
 var port = process.env.PORT || 8080;
-var http = require('http');
+var serv = require('http').Server(app);
+var io = require('socket.io').listen(serv);
 var passport = require('passport');
 var flash    = require('connect-flash');
 
@@ -40,7 +41,9 @@ require('./app/routes.js')(app, passport); // load our routes and pass in our ap
 // require('./app/functions.js')(app);
 
 // launch ======================================================================
-app.listen(port);
+serv.listen('8080', function () {
+	console.log('server initiated');
+})
 console.log('The magic happens on port ' + port);
 
 //https://scotch.io/tutorials/easy-node-authentication-setup-and-local
