@@ -6,6 +6,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://use.fontawesome.com/eddb453e51.js"></script>
+
+
 	<script src="/socket.io/socket.io.js"></script>
 	<style>
 	body {
@@ -90,12 +92,7 @@
 	  	</div>
 	</nav>
 
-
-
-
-	<script>
-		// Script for Facebook Page Message.
-		console.log(req.session);
+<script>
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '95100348886',
@@ -113,31 +110,55 @@
       }(document, 'script', 'facebook-jssdk'));
     </script>
 
-
-    <div align="right">
-	    <div class="fb-page" 
-	         data-href="https://www.facebook.com/equipshare.in/" 
-	         data-tabs="messages" 
-	         data-width="400" 
-	         data-height="300" 
-	         data-small-header="true">
-	      <div class="fb-xfbml-parse-ignore">
-	        <blockquote></blockquote>
-	      </div>
-	    </div>
+    <div align = "right">
+    <div class="fb-page" 
+         data-href="https://www.facebook.com/equipshare.in//" 
+         data-tabs="messages" 
+         data-width="400" 
+         data-height="300" 
+         data-small-header="true">
+      <div class="fb-xfbml-parse-ignore">
+        <blockquote></blockquote>
+      </div>
+    </div>
 	</div>
 
-<script type="text/javascript">
-	
-	socket.on("connect", onsocketConnected);
-	var chatfunc = new function(){
-		X = chat.value;
-		socket.emit('chat_message', {name: Name, text: X});
-		chat.value = '';
-		//onChatUpdate({name: Name, text: X});
+
+
+<script>
+    var socket = io.connect();
+
+    socket.on('connect', function (data) {
+    	console.log("USER STARTED A CHAT");
+        socket.emit('storeClientInfo', { id : <%= id %> });
+    });
+
+    socket.on('newChatMsg', function(data){
+    	console.log(data);
+    });
+
+    function myFunction() {
+    	var x = document.getElementById("chatform");
+    	console.log("new msg: " + x.elements[0].value);
+    	data = {
+    		ToWhomId : 16,
+    		msg : x.elements[0].value
+    	}
+    	socket.emit('chat_message', data);
+
 	}
 
+
 </script>
+
+
+<form id = "chatform" align = "right" action="javascript:myFunction()">
+  Type Message: <input type="text" name="chat"><br>
+
+  <!-- ADD HIDDEN FIELD FOR GIVING towhom ID -->
+
+  <input type="button" onclick="myFunction()" value="Submit">
+</form>
 
 
 

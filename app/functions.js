@@ -37,7 +37,7 @@ module.exports = {
             res.redirect('/dashboard');
         }
         else{
-            res.render('login.ejs', { message: req.flash('loginMessage') });
+            return done();
         }
     },
 
@@ -119,16 +119,19 @@ module.exports = {
 
             if(category == 1){
                 res.render('Profiles/user/dashboard_user.ejs', {
+                    id : req.session.user,
                     user : rows // get the user out of session and pass to template
                 });
             }
             else if(category == 2){
                 res.render('Profiles/dealer/dashboard_dealer.ejs', {
+                    id : req.session.user,
                     user : rows // get the user out of session and pass to template
                 });
             }
             else if(category == 3){
                 res.render('Profiles/admin/dashboard_admin.ejs', {
+                    id : req.session.user,
                     user : rows // get the user out of session and pass to template
                 });
             }
@@ -417,7 +420,7 @@ module.exports = {
                             bid_para = 0;
                             console.log("Auction ended, now bidding = " + app.settings.bid_para);
 
-                            // ADD ALLOCATION TO AUCTION
+                            // ADD ALLOCATION TO AUCTION AUCTION para = 2
                         });
 
 
@@ -629,6 +632,7 @@ module.exports = {
         });
     },
 
+
     //================================================================================
     //======================= General FUNCTIONS ======================================
     //================================================================================
@@ -678,7 +682,7 @@ module.exports = {
         connection.query(selectquery, (err,rows)=>{
             if(err) throw err;
             else if(!rows.length){
-                return null;
+                res.send("NO AUCTION AVAILABLE");
             }
             else {
                 console.log(rows);
