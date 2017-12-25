@@ -1,2 +1,4 @@
-node_modules
-database.js
+
+node_modules/
+config/database.js
+

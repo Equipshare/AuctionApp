@@ -33,12 +33,7 @@ module.exports = {
 
 	loginfunc: function(req, res) {
         // render the page and pass in any flash data if it exists
-        if(typeof req.session.passport !== 'undefined'){
-            res.redirect('/dashboard');
-        }
-        else{
-            res.render('login.ejs', { message: req.flash('loginMessage') });
-        }
+        res.send("WELCOME PLEASE LOGIN");
     },
 
     profilefunc: function(req, res) {
@@ -48,18 +43,18 @@ module.exports = {
         connection.query("SELECT * FROM account WHERE id = ?", [userid], function(err, rows){
 
 	        if(category == 1){
-	            res.render('Profiles/user/profile_user.ejs', {
-	                user : rows[0] // get the user out of session and pass to template
+	            res.send({
+	                user : rows[0] // Send Json data
 	            });
 	        }
 	        else if(category == 2){
-                res.render('Profiles/dealer/profile_dealer.ejs', {
-	                user : rows[0] // get the user out of session and pass to template
+                res.send({
+	                user : rows[0] // Send Json data
 	            });
 	        }
 	        else if(category == 3){
-                res.render('Profiles/admin/profile_admin.ejs', {
-                    user : rows[0] // get the user out of session and pass to template
+                res.send({
+                    user : rows[0] // Send Json data
                 });
 	        }
 
@@ -96,17 +91,19 @@ module.exports = {
         var category = req.session.category;
         connection.query("SELECT * FROM account WHERE id = ?",[userid], function(err, rows){
             wallet_data = {
-                user : rows[0].wallet // send balance info.
+                wallet_balance : rows[0].wallet, // send balance info.
+                user: userid,
+                category : category
             };
             switch (category) {
                 case 1:
-                    res.render('Profiles/user/wallet.ejs', wallet_data);
+                    res.send(wallet_data);
                     break;
                 case 2:
-                    res.render('Profiles/dealer/wallet.ejs', wallet_data);
+                    res.send(wallet_data);
                     break;
                 case 3:
-                    res.render('Profiles/admin/wallet.ejs', wallet_data);
+                    res.send(wallet_data);
             }
 	    });
     },
@@ -120,18 +117,21 @@ module.exports = {
         connection.query(selectquery, [userid], function(err, rows){
 
             if(category == 1){
-                res.render('Profiles/user/dashboard_user.ejs', {
-                    user : rows // get the user out of session and pass to template
+                res.send({
+                    id : req.session.user,
+                    car_data : rows // get the user out of session and pass to template
                 });
             }
             else if(category == 2){
-                res.render('Profiles/dealer/dashboard_dealer.ejs', {
-                    user : rows // get the user out of session and pass to template
+                res.send({
+                    id : req.session.user,
+                    car_data : rows // get the user out of session and pass to template
                 });
             }
             else if(category == 3){
-                res.render('Profiles/admin/dashboard_admin.ejs', {
-                    user : rows // get the user out of session and pass to template
+                res.send({
+                    id : req.session.user,
+                    car_data : rows // get the user out of session and pass to template
                 });
             }
         });
@@ -169,7 +169,7 @@ module.exports = {
                 message:"reset your password", 
                 user:rows[0]
             }
-            res.render('forgot-password.ejs', result);
+            res.send(result);
         });
     },
 
@@ -195,7 +195,7 @@ module.exports = {
             updatequery = "UPDATE account set password = ?, resetPasswordToken = ?, resetPasswordExpire = ? WHERE username = ?";
             connection.query(updatequery, [password, resetPasswordToken, resetPasswordExpire, rows[0].username], function(err, rows){
                 if(err)throw err;
-                res.status(200).json({a: rows, b : " Your password has been reset."});
+                res.status(200).json({data: rows, message : " Your password has been reset."});
             });
         });
     },
@@ -419,7 +419,7 @@ module.exports = {
                             bid_para = 0;
                             console.log("Auction ended, now bidding = " + app.settings.bid_para);
 
-                            // ADD ALLOCATION TO AUCTION
+                            // ADD ALLOCATION TO AUCTION AUCTION para = 2
                         });
 
 
@@ -640,6 +640,7 @@ module.exports = {
         });
     },
 
+
     //================================================================================
     //======================= General FUNCTIONS ======================================
     //================================================================================
@@ -689,7 +690,7 @@ module.exports = {
         connection.query(selectquery, (err,rows)=>{
             if(err) throw err;
             else if(!rows.length){
-                return null;
+                res.send("NO AUCTION AVAILABLE");
             }
             else {
                 console.log(rows);

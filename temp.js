@@ -41,6 +41,9 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
   CREATE TABLE enquiry ( sender_id int, reciever_id int, description varchar(200) );
 
+              //      //     CREATE TABLE chatdata (sender_id INT, reciever_id INT, time TIMESTAMP, msg_int int);
+
+  
 
 */
 
@@ -58,4 +61,5 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
 
 */
+
 

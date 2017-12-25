@@ -50,4 +50,65 @@ serv.listen('8080', function () {
 })
 console.log('The magic happens on port ' + port);
 
+//=============== CHAT CODE ======================
+
+ var clients =[];
+
+    io.sockets.on('connection', function (socket) {
+
+        socket.on('storeClientInfo', function (data) {
+
+            var clientInfo = new Object();
+            clientInfo.customId = data.id;
+            clientInfo.clientId = socket.id;
+            clients.push(clientInfo);
+            console.log("Added new client " + JSON.stringify(clients));
+        });
+
+
+        socket.on('chat_message', function(data){
+        	console.log(data);
+        	console.log("New msg recieved " + JSON.stringify(clients) + JSON.stringify(data));
+
+        	var toWhom;
+
+        	for(var i = 0; i < clients.length; i++)
+			{
+			  if(clients[i].customId == data.ToWhomId)
+			  {
+			    toWhom = clients[i].clientId;
+			    break;
+			  }
+			}
+			console.log(toWhom);
+
+			if(toWhom){
+				senddata = {
+					msg : data.msg,
+					to : toWhom,
+					from : socket.id
+				}
+				io.to(toWhom).emit('newChatMsg', senddata);
+			}
+
+
+
+			// 
+
+        });
+
+        socket.on('disconnect', function (data) {
+
+            for( var i=0, len=clients.length; i<len; ++i ){
+                var c = clients[i];
+
+                if(c.clientId == socket.id){
+                    clients.splice(i,1);
+                    console.log("client removed " + JSON.stringify(clients));
+                    break;
+                }
+            }
+
+        });
+    });
 //https://scotch.io/tutorials/easy-node-authentication-setup-and-local
