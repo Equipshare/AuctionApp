@@ -11,8 +11,9 @@ var functions = require('./functions')
 module.exports = function(app, passport) {
 
     // HOME PAGE
-    app.get('/', function(req, res) {
-        res.render('index.ejs');
+    app.get('/',functions.isLoggedInfunc, function(req, res) {
+        console.log(req.session);
+        res.send("Hello, Welcome");
     });
 
     // LOGIN
@@ -20,11 +21,26 @@ module.exports = function(app, passport) {
     app.get('/login', functions.loginfunc);
 
     // process the LOGIN form
-    app.post('/login', passport.authenticate('local-login', {
-            successRedirect : '/dashboard', // redirect to the secure profile section
-            failureRedirect : '/login', // redirect back to the signup page if there is an error
-            failureFlash : true // allow flash messages
-        }),
+    app.post('/login', function(req, res, next){
+        passport.authenticate('local-login', function (err, user, info) {
+
+            //this function is called when LocalStrategy returns done function with parameters
+
+            //if any error , throw error to default error handler
+            if(err) throw err;
+
+            //if username or password doesn't match
+            if(!user){
+                return res.send(info);
+            }
+
+            //this is when login is successful
+            req.logIn(user, function(err) {
+                if (err) { return next(err); }
+                return res.redirect('/');
+            });
+            
+        })(req,res,next),
         function(req, res) {
             console.log("hello");
             if (req.body.remember) {
@@ -33,6 +49,7 @@ module.exports = function(app, passport) {
               req.session.cookie.expires = false;
             }
         res.redirect('/');
+        }
     });
 
     // SIGNUP ==============================

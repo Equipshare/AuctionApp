@@ -41,7 +41,7 @@ module.exports = function(passport) {
         'local-signup',
         new LocalStrategy({
             // by default, local strategy uses username and password
-            usernameField : 'username',
+            usernameField : 'mobile',
             passwordField : 'password',
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
@@ -49,15 +49,16 @@ module.exports = function(passport) {
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
             connection.query("SELECT * FROM account WHERE username = ?",[username], function(err, rows) {
+                console.log(username);
                 if (err)
                     return done(err);
                 if (rows.length) {
-                    return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                    return done(null, false, {usrmsg: 'That username is already taken'});
                 } else {
                     // if there is no user with that username
                     // create the user
                     var newUserMysql = {
-                        username: username,
+                        username: req.body.username,
                         password: bcrypt.hashSync(password, null, null),  // use the generateHash function in our user model
                         category: req.body.category,
                         email: req.body.email,
@@ -91,21 +92,22 @@ module.exports = function(passport) {
         'local-login',
         new LocalStrategy({
             // by default, local strategy uses username and password, we will override with email
-            usernameField : 'username',
+            usernameField : 'mobile',
             passwordField : 'password',
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, username, password, done) { // callback with email and password from our form
-            connection.query("SELECT * FROM account WHERE username = ?",[username], function(err, rows){
+            connection.query("SELECT * FROM account WHERE mobile = ?",[username], function(err, rows){
+                console.log(username);
                 if (err)
                     return done(err);
                 if (!rows.length) {
-                    return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                    return done(null, false, "No user found"); // req.flash is the way to set flashdata using connect-flash
                 }
 
                 // if the user is found but the password is wrong
                 if (!bcrypt.compareSync(password, rows[0].password))
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+                    return done(null, false, "Oops! Wrong password"); // create the loginMessage and save it to session as flashdata
 
                 req.session.user = rows[0].id;
                 req.session.category = rows[0].category;
@@ -113,7 +115,7 @@ module.exports = function(passport) {
 
                 // all is well, return successful user
                 category = rows[0].category;
-                return done(null, rows[0]);
+                return done(null, rows[0], "Welcome");
             });
         })
     );
