@@ -44,6 +44,7 @@ module.exports = {
     profilefunc: function(req, res) {
         var userid = req.session.user;
         var category = req.session.category;
+        console.log(req.body.hides);
         connection.query("SELECT * FROM account WHERE id = ?", [userid], function(err, rows){
 
 	        if(category == 1){
@@ -69,12 +70,14 @@ module.exports = {
 	isLoggedInfunc: function isLoggedIn(req, res, next) {
         //return next();
 	    // if user is authenticated in the session, carry on
-	    if (req.isAuthenticated())
+	    if (req.isAuthenticated()){
 	        return next();
-
+        }
 	    // if they aren't redirect them to the home page
 	    res.redirect('/login');
 	},
+
+
 
 	logoutfunc: function(req, res) {
         req.logout();
@@ -113,7 +116,6 @@ module.exports = {
     dashboard: function(req, res){
         var userid = req.session.user;
         var category = req.session.category;
-        console.log(category);
         selectquery = "SELECT * FROM all_equipment where (dealer != ? AND auction_para = '1')";
         connection.query(selectquery, [userid], function(err, rows){
 
@@ -388,7 +390,7 @@ module.exports = {
 
     add_new_auction_post_form: function(req, res){
         var data = req.body;
-        var selectquery = "Select * from auction WHERE ( (? > start_time AND ? < end_time) OR (? > start_time AND ? < end_time) )"
+        var selectquery = "Select * from auction WHERE ( (? > start_time AND ? < end_time) OR (? > start_time AND ? < end_time) OR (?) )"
 
         connection.query(selectquery,[data.start_time, data.start_time, data.end_time, data.end_time], function(err, rows){
             console.log(rows);
@@ -485,13 +487,22 @@ module.exports = {
             }
             else {
                 console.log(rows);
+                 connection.query("UPDATE location SET dealer_count=dealer_count + 1 WHERE CITY = ?",[data.location], function(err, rows){
+            if (err){
+                throw err;
+            }
+            else {
+                console.log(rows);
+                
+                
+            }
+        });
                 res.redirect('/profile');
             }
         });
     },
 
     add_car : function(req, res){
-        console.log("DFGHJKHGFD");
         connection.query("SELECT id, asset_name, model FROM std_equipment", function(err, rows){
             if (err){
                 throw err;
@@ -691,6 +702,9 @@ module.exports = {
         });
     }
 }
+
+
+
 
 
 function genrate_mail(req, rows) {

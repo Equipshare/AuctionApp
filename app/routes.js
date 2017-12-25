@@ -74,37 +74,37 @@ module.exports = function(app, passport) {
     //======================= ADMIN ROUTES ===========================================
     //================================================================================
 
-    app.get('/new_location', functions.isLoggedInfunc, functions.new_location);
-    app.post('/new_location', functions.isLoggedInfunc, functions.add_new_location);
-    app.get('/existing_location', functions.isLoggedInfunc, functions.existing_location);
-    app.get('/existing_user', functions.isLoggedInfunc, functions.existing_user);
-    app.get('/add_new_admin', functions.isLoggedInfunc, functions.add_new_admin);
-    app.post('/add_new_admin', functions.isLoggedInfunc, functions.add_new_admin_post_form);
-    app.get('/add_new_equipment', functions.isLoggedInfunc, functions.add_new_equipment);
-    app.post('/add_new_equipment', functions.isLoggedInfunc, functions.add_new_equipment_post_form);
-    app.get('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction);
-    app.post('/add_new_auction', functions.isLoggedInfunc, functions.add_new_auction_post_form);
-    app.get('/existing_dealers', functions.isLoggedInfunc, functions.existing_dealers);
+    app.get('/new_location', functions.isLoggedInfunc, admin_access, functions.new_location);
+    app.post('/new_location', functions.isLoggedInfunc, admin_access, functions.add_new_location);
+    app.get('/existing_location', functions.isLoggedInfunc, admin_access, functions.existing_location);
+    app.get('/existing_user', functions.isLoggedInfunc, admin_access, functions.existing_user);
+    app.get('/add_new_admin', functions.isLoggedInfunc, admin_access, functions.add_new_admin);
+    app.post('/add_new_admin', functions.isLoggedInfunc, admin_access, functions.add_new_admin_post_form);
+    app.get('/add_new_equipment', functions.isLoggedInfunc, admin_access, functions.add_new_equipment);
+    app.post('/add_new_equipment', functions.isLoggedInfunc, admin_access, functions.add_new_equipment_post_form);
+    app.get('/add_new_auction', functions.isLoggedInfunc, admin_access, functions.add_new_auction);
+    app.post('/add_new_auction', functions.isLoggedInfunc, admin_access, functions.add_new_auction_post_form);
+    app.get('/existing_dealers', functions.isLoggedInfunc,  functions.existing_dealers);    //common for admin and dealer
     app.post('/existing_dealers', functions.isLoggedInfunc, functions.existing_dealers);
-    app.get('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form);
-    app.post('/enquiry_form', functions.isLoggedInfunc, functions.enquiry_form_post_form);
+    app.get('/enquiry_form', functions.isLoggedInfunc, admin_access, functions.enquiry_form);
+    app.post('/enquiry_form', functions.isLoggedInfunc, admin_access, functions.enquiry_form_post_form);
 
 
     //================================================================================
     //======================= DEALER ROUTES ==========================================
     //================================================================================
 
-    app.get('/complete_profile', functions.isLoggedInfunc, functions.complete_profile);
-    app.post('/complete_profile', functions.isLoggedInfunc, functions.complete_profile_post_form);
-    app.get('/add_car', functions.isLoggedInfunc, functions.add_car); 
-    app.post('/add_car', functions.isLoggedInfunc, functions.add_car_post_form);
-    app.get('/dealer_my_equipment', functions.isLoggedInfunc, functions.dealer_my_equipment); 
-    app.post('/change_auction_status', functions.isLoggedInfunc, functions.change_auction_status);
-    app.get('/dealer_purchase', functions.isLoggedInfunc, functions.dealer_purchase);
-    app.post('/dealer_purchase',functions.isLoggedInfunc, functions.dealer_purchase_post_form);
-    app.get('/dealer_sell', functions.isLoggedInfunc, functions.dealer_sell);
-    app.post('/dealer_sell', functions.isLoggedInfunc, functions.dealer_sell_post_form);
-    app.get('/next_auction', functions.isLoggedInfunc, functions.next_auction);
+    app.get('/complete_profile', functions.isLoggedInfunc, dealer_access, functions.complete_profile);
+    app.post('/complete_profile', functions.isLoggedInfunc,  dealer_access, functions.complete_profile_post_form);
+    app.get('/add_car', functions.isLoggedInfunc, dealer_access, functions.add_car); 
+    app.post('/add_car', functions.isLoggedInfunc, dealer_access,  functions.add_car_post_form);
+    app.get('/dealer_my_equipment', functions.isLoggedInfunc, dealer_access,  functions.dealer_my_equipment); 
+    app.post('/change_auction_status', functions.isLoggedInfunc, dealer_access,  functions.change_auction_status);
+    app.get('/dealer_purchase', functions.isLoggedInfunc, dealer_access,  functions.dealer_purchase);
+    app.post('/dealer_purchase',functions.isLoggedInfunc, dealer_access,  functions.dealer_purchase_post_form);
+    app.get('/dealer_sell', functions.isLoggedInfunc, dealer_access,  functions.dealer_sell);
+    app.post('/dealer_sell', functions.isLoggedInfunc, dealer_access,  functions.dealer_sell_post_form);
+    app.get('/next_auction', functions.isLoggedInfunc, dealer_access,  functions.next_auction);
     //app.post('/next_auction',functions.isLoggedInfunc, functions.dashboard);
 
 
@@ -124,3 +124,23 @@ module.exports = function(app, passport) {
     
 
 }
+
+
+var dealer_access = function access(req,res,next){
+           
+            if(req.session.category==2)
+                return next();
+            return res.render("Profiles/dealer/error.ejs");
+    }
+
+var admin_access = function access(req,res,next){
+           
+            if(req.session.category==3)
+                return next();
+            return res.render("Profiles/dealer/error.ejs");
+    }    
+var user_access = function access(req,res,next){
+        
+            if(req.session.category==1)
+                return next();
+            return res.render("Profiles/dealer/error.ejs");    }    

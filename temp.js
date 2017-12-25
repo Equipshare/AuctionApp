@@ -25,7 +25,7 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
   CREATE TABLE admin (id int(5), location int(5), boss_id int(5));
   
-  CREATE TABLE dealer (id int(5), location int(5), pan_number varchar(25), GST_number varchar(25), deal_count int(6), total_asset int(7), req_stat int(1));
+  CREATE TABLE dealer (id int(5), location varchar(30), pan_number varchar(25), GST_number varchar(25), deal_count int(6), total_asset int(7), req_stat int(1));
 
   CREATE TABLE std_equipment (id int NOT NULL AUTO_INCREMENT, asset_name varchar(25), model varchar(25), market_price int(12), description varchar (1500),search_count int, view_count int, auction_count int,  PRIMARY KEY (id));
 
