@@ -1,4 +1,23 @@
-/*
+/*var mysql = require('mysql');
+var dbconfig = require('./config/database');
+var connection = mysql.createConnection(dbconfig.connection);
+
+connection.query('USE ' + dbconfig.database);
+
+const notifier = require('node-notifier');
+
+var nodemailer = require('nodemailer');
+var bcrypt = require('bcrypt-nodejs');
+
+connection.query("SELECT * FROM account", function(err,res){
+  if(err){
+    throw err;
+  }
+  else{
+    console.log(res);
+  }
+});
+
 
 var mysql = require('mysql');
 
@@ -43,8 +62,8 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
               //      //     CREATE TABLE chatdata (sender_id INT, reciever_id INT, time TIMESTAMP, msg_int int);
 
+  Create table deals (id int not null AUTO_INCREMENT, seller_id int, buyer_id int,bid_price int,equip_id int, auction_id int, sale_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, mysql> Create table deals (id int not null AUTO_INCREMENT, seller_id int, buyer_id int,bid_price int,equip_id int, auction DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id));
   
-
 */
 
 
@@ -61,5 +80,3 @@ var sql = "CREATE TABLE account (id int NOT NULL AUTO_INCREMENT, username varcha
 
 
 */
-
-

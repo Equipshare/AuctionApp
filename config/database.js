@@ -10,4 +10,4 @@ module.exports = {
 };
 
 
-// hjsdhajhdajhdjahkjdshkj
+// configuration of localhost/database

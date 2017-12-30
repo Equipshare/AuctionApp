@@ -13,11 +13,11 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 
 var configDB = require('./config/database.js');
-
 //==============================================================
 
 
 require('./config/passport')(passport); // passport for configuration
+schedule_auction = require('./app/functions_admin');
 
 // set up of express application
 app.use(morgan('dev')); // log every request to the console
@@ -47,15 +47,27 @@ require('./app/routes.js')(app, passport); // load our routes and pass in our ap
 // launch ======================================================================
 serv.listen('8080', function () {
 	console.log('server initiated');
+	//==============================================================================
+	//=============== DAILY AUCTION SCHEDULE CODE ==================================
+	//==============================================================================
+
+	schedule_auction.schedule_auction();
+
+
 })
 console.log('The magic happens on port ' + port);
 
-//=============== CHAT CODE ======================
 
- var clients =[];
 
-    io.sockets.on('connection', function (socket) {
+//==============================================================================
+//=============== CHAT CODE ====================================================
+//==============================================================================
 
+ var clients =[]; //store clients socket id and account id who are online
+
+    io.sockets.on('connection', function (socket) { // on connection
+
+    	// add clent to clients array when online
         socket.on('storeClientInfo', function (data) {
 
             var clientInfo = new Object();
@@ -65,7 +77,7 @@ console.log('The magic happens on port ' + port);
             console.log("Added new client " + JSON.stringify(clients));
         });
 
-
+        // when a chat message comes in
         socket.on('chat_message', function(data){
         	console.log(data);
         	console.log("New msg recieved " + JSON.stringify(clients) + JSON.stringify(data));
@@ -90,13 +102,11 @@ console.log('The magic happens on port ' + port);
 				}
 				io.to(toWhom).emit('newChatMsg', senddata);
 			}
-
-
-
 			// 
 
         });
 
+        // when a client is disconnected, (remove from clients)
         socket.on('disconnect', function (data) {
 
             for( var i=0, len=clients.length; i<len; ++i ){
