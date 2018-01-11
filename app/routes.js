@@ -156,11 +156,13 @@ module.exports = function(app, passport) {
 
     // // TEMPORARY routes =================================================================
 
-    app.get('/temp/:data', function (req, res){
+    app.get('/temp', function (req, res){
         // for temporary use
-
-        console.log(req.params);
-        res.send(req.params);
+        query = "SHOW DATABASES";
+        connection.query(query, function(err, rows){
+            console.log(rows);
+            res.send(rows);
+        });
     });
     // app.post('/temp', function(req, res){
     //     console.log(req.body);

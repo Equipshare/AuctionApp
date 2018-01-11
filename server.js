@@ -54,7 +54,7 @@ serv.listen('8080', function () {
 	schedule_auction.schedule_auction();
 
 
-})
+});
 console.log('The magic happens on port ' + port);
 
 
