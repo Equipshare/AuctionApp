@@ -58,6 +58,7 @@ module.exports = {
 
     // route middleware to make sure
 	isLoggedInfunc: function isLoggedIn(req, res, next) {
+         console.log(req.session);
         //return next();
 	    // if user is authenticated in the session, carry on
 	    if (req.isAuthenticated()){
