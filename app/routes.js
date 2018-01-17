@@ -22,7 +22,14 @@ module.exports = function(app, passport) {
     // HOME PAGE
     app.get('/',functions.isLoggedInfunc, function(req, res) {
         console.log("Logged in with id: " + req.session.user);
-        res.send("Hello, Welcome");
+        connection.query("SELECT first_name from account where id = ?", [req.session.user], function(err,rows){
+            data = {
+                id: req.session.name,
+                name: rows[0].first_name,
+                msg: "Hello, Welcome"
+            };
+            res.send(data);
+        });
     });
 
     // LOGIN
@@ -156,11 +163,13 @@ module.exports = function(app, passport) {
 
     // // TEMPORARY routes =================================================================
 
-    app.get('/temp/:data', function (req, res){
+    app.get('/temp', function (req, res){
         // for temporary use
-
-        console.log(req.params);
-        res.send(req.params);
+        query = "SHOW DATABASES";
+        connection.query(query, function(err, rows){
+            console.log(rows);
+            res.send(rows);
+        });
     });
     // app.post('/temp', function(req, res){
     //     console.log(req.body);
