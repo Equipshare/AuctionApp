@@ -39,11 +39,11 @@ module.exports = {
 
 
             var smtpTransport = nodemailer.createTransport({
-                host:'smtp.ethereal.email',
+                service:'SendGrid',
                 port: 587,
                 auth:{
-                    user:'c74kurqre2vnhdim@ethereal.email',
-                    pass:'X3Msz17xGCs2AA2sBA'
+                    user:'jarvis123',
+                    pass:'abhansh@123'
                 }
             });
 
