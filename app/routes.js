@@ -22,8 +22,9 @@ module.exports = function(app, passport) {
     // HOME PAGE
     app.get('/',functions.isLoggedInfunc, function(req, res) {
         console.log("Logged in with id: " + req.session.user);
-        connection.query("SELECT first_name from account where id = ?", [req.session.user],functions(err,rows){
+        connection.query("SELECT first_name from account where id = ?", [req.session.user], function(err,rows){
             data = {
+                id: req.session.name,
                 name: rows[0].first_name,
                 msg: "Hello, Welcome"
             };
