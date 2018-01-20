@@ -1,9 +1,9 @@
 // config/database.js
 module.exports = {
     'connection': {
-        'host': 'localhost',
-        'user': 'abc',
-        'password': 'Abcd@1234'
+        'host': '35.200.138.125',
+        'user': 'tester',
+        'password': 'tester@1234'
     },
 	'database': 'eqsAuction',
     'users_table': 'account'
