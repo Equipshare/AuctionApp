@@ -1,0 +1,5 @@
+runtime: nodejs
+env: flex
+
+beta_settings:
+  cloud_sql_instances: "auctioning-192405:asia-south1:auctionapp"
