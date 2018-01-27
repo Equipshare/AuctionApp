@@ -57,6 +57,14 @@ module.exports = function(passport) {
                     // if there is no user with that username
                     // create the user
                     var newUserMysql = {
+                        first_name: req.body.first_name,
+                        last_name: req.body.last_name,
+                        middle_name: req.body.middle_name,
+                        city: req.body.city,
+                        state: req.body.state,
+                        country: req.body.country,
+                        zipcode: req.body.zipcode,
+                        pan_number: req.body.pan_number,
                         password: bcrypt.hashSync(password, null, null),  // use the generateHash function in our user model
                         category: req.body.category,
                         email: req.body.email,
@@ -65,9 +73,9 @@ module.exports = function(passport) {
                         wallet: 0
                     };
 
-                    var insertQuery = "INSERT INTO account ( password, category, email, mobile, wallet, address) values (?,?,?,?,?,?)";
+                    var insertQuery = "INSERT INTO account (first_name, last_name, middle_name, city, state, country, zipcode, pan_number, password, category, email, mobile, wallet, address) values (?,?,?,?,?,?, ?, ?, ?,?,?,?,?,?)";
 
-                    connection.query(insertQuery,[ newUserMysql.password, newUserMysql.category, newUserMysql.email, newUserMysql.mobile, newUserMysql.wallet, newUserMysql.address],function(err, rows) {
+                    connection.query(insertQuery,[newUserMysql.first_name, newUserMysql.last_name, newUserMysql.middle_name, newUserMysql.city, newUserMysql.state, newUserMysql.country, newUserMysql.zipcode, newUserMysql.pan_number, newUserMysql.password, newUserMysql.category, newUserMysql.email, newUserMysql.mobile, newUserMysql.wallet, newUserMysql.address],function(err, rows) {
                         if(err){
                             console.log('$'+newUserMysql.mobile+'$')
                             return done(err);

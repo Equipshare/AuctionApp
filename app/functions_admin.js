@@ -131,7 +131,7 @@ module.exports = {
                     connection.query("SELECT * from account WHERE mobile = ?", [data.mobile], function(err, rows){
                         // generate mail to send to the email for reseting password
                         others.generate_mail(req, rows);
-                        res.redirect('/profile');
+                        res.send("Mail Send to, Tell other admin to change password in an hour");
                     });
 	            	}
 	            });

@@ -32,18 +32,17 @@ module.exports = {
             updatequery = "UPDATE account SET resetPasswordToken = ?, resetPasswordExpire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE mobile = ?";
 
             connection.query(updatequery, [token, rows[0].mobile], function(err, rows){
-                console.log(rows);
                 if(err) throw err;
                 else return rows;
                 });
 
 
             var smtpTransport = nodemailer.createTransport({
-                host:'smtp.ethereal.email',
+                service:'SendGrid',
                 port: 587,
                 auth:{
-                    user:'c74kurqre2vnhdim@ethereal.email',
-                    pass:'X3Msz17xGCs2AA2sBA'
+                    user:'jarvis123',
+                    pass:'abhansh@123'
                 }
             });
 

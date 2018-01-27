@@ -30,11 +30,16 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
-app.use(session({ secret: "winteriscoming",
-						cookie: {
-							httpOnly: true,
-							secure: false
-						} })); // session secret
+app.use(session({ 
+	secret: "winteriscoming",
+	resave: true,
+    saveUninitialized: true,
+		cookie: {
+			httpOnly: true,
+			secure: false
+	}
+	})); // session secret
+
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -57,6 +62,16 @@ serv.listen('8080', function () {
 });
 console.log('The magic happens on port ' + port);
 
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+})
 
 
 //==============================================================================

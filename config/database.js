@@ -5,9 +5,6 @@ module.exports = {
         'user': 'abc',
         'password': 'Abcd@1234'
     },
-	'database': 'eqsAuction',
+        'database': 'eqsAuction',
     'users_table': 'account'
 };
-
-
-// configuration of localhost/database
