@@ -20,7 +20,7 @@ var functions_dealer = require('./functions_dealer');
 module.exports = function(app, passport) {
 
     // HOME PAGE
-    app.get('/',functions.isLoggedInfunc, function(req, res) {
+    app.get('/', functions.isLoggedInfunc, function(req, res) {
         console.log("Logged in with id: " + req.session.user);
         connection.query("SELECT first_name from account where id = ?", [req.session.user], function(err,rows){
             data = {

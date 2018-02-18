@@ -58,12 +58,16 @@ module.exports = {
     // route middleware to make sure
 	isLoggedInfunc: function isLoggedIn(req, res, next) {
         //return next();
+        
 	    // if user is authenticated in the session, carry on
 	    if (req.isAuthenticated()){
 	        return next();
         }
+        else {
+            res.redirect('/login');
+        }
 	    // if they aren't redirect them to the home page
-	    res.redirect('/login');
+
 	},
 
 

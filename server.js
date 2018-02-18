@@ -27,17 +27,17 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.set('view engine', 'ejs'); // set up ejs for templating
-
 // required for passport
-app.use(session({ 
+app.use(session({
+    key: "userdata",
 	secret: "winteriscoming",
-	resave: true,
-    saveUninitialized: true,
+	resave: false,
+    saveUninitialized: false,
 		cookie: {
-			httpOnly: true,
-			secure: false
-	}
+			// httpOnly: false,
+			// secure: false
+            expires: 600000
+	   }
 	})); // session secret
 
 app.use(passport.initialize());
