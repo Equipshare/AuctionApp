@@ -28,17 +28,15 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // required for passport
-app.use(session({
-    key: "userdata",
-	secret: "winteriscoming",
-	resave: false,
-    saveUninitialized: false,
-		cookie: {
-			// httpOnly: false,
-			// secure: false
-            expires: 600000
-	   }
-	})); // session secret
+app.use(session({ 
+    secret: "winteriscoming",
+    resave: true,
+    saveUninitialized: true,
+        cookie: {
+            httpOnly: true,
+            secure: false
+    }
+    }));
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
