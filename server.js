@@ -1,7 +1,7 @@
 //initializing and loading things
 var express  = require('express');
 var app = express();
-var port = process.env.PORT || 80;
+var port = '3000';
 var serv = require('http').Server(app);
 var io = require('socket.io').listen(serv);
 var passport = require('passport');
@@ -48,7 +48,7 @@ require('./app/routes.js')(app, passport); // load our routes and pass in our ap
 // require('./app/functions.js')(app);
 
 // launch ======================================================================
-serv.listen('80', function () {
+serv.listen(port, function () {
 	console.log('server initiated');
 	//==============================================================================
 	//=============== DAILY AUCTION SCHEDULE CODE ==================================
