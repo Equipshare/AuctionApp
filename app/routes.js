@@ -28,7 +28,7 @@ module.exports = function(app, passport) {
                 name: rows[0].first_name,
                 msg: "Hello, Welcome"
             };
-            res.send(data);
+            res.send({msg: data});
         });
     });
 
@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
 
             //if username or password doesn't match
             if(!user){
-                return res.send(info);
+                return res.send({msg: info});
             }
 
             //this is when login is successful
@@ -83,7 +83,7 @@ module.exports = function(app, passport) {
 
             //if username or password doesn't match
             if(!user){
-                return res.send(info);
+                return res.send({msg: info});
             }
 
             //this is when login is successful

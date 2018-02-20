@@ -32,7 +32,7 @@ module.exports = {
 
 
 	loginfunc: function(req, res) {
-        res.send("WELCOME PLEASE LOGIN");
+        res.send({msg: "WELCOME PLEASE LOGIN"});
     },
 
 
@@ -149,7 +149,7 @@ module.exports = {
                     res.send(car);
                 }
                 else
-                    res.send("CAR NOT FOUND");    
+                    res.send({msg: "CAR NOT FOUND"});    
                 }
             });
         },
@@ -161,11 +161,11 @@ module.exports = {
 
             if(err)throw err;
             else if(!rows.length){
-                res.send("no user with this mobile exists");
+                res.send({msg: "no user with this mobile exists"});
             }
             else {
                 others.generate_mail(req, rows);
-                res.send("A mail has been send to your registered email-id")
+                res.send({msg: "A mail has been send to your registered email-id"})
             }
         })
     },
@@ -223,7 +223,7 @@ module.exports = {
                 if(category== 3 || category == 2){
                     res.send(rows); 
                 }
-                else res.send("Not found");
+                else res.send({msg: "Not found"});
             }
         });
     },
@@ -329,7 +329,7 @@ module.exports = {
         
             if(data.new_bid <= next_bid){
                 //message to flash that you must bid higher than mini bid
-                res.send("Please Bid higher");
+                res.send({msg: "Please Bid higher"});
             }
             else {
                 next_bid = Number(data.new_bid) + 1000;
@@ -342,7 +342,7 @@ module.exports = {
                         connection.query(updatequery, [next_bid, data.equip_id], function(err,req){
                             if(err) throw err;
                             else{
-                            res.send("Your bid is recorded");
+                            res.send({msg: "Your bid is recorded"});
                             }
                         });
                     }
