@@ -28,7 +28,7 @@ module.exports = function(app, passport) {
                 name: rows[0].first_name,
                 msg: "Hello, Welcome"
             };
-            res.send({msg: data});
+            res.send(data);
         });
     });
 
