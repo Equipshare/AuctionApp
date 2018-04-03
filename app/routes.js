@@ -12,7 +12,7 @@ var express  = require('express');
 var app = express();
 
 // import functions from other files.
-var functions = require('./functions');
+var functions = require('./functions')
 var functions_admin = require('./functions_admin');
 var functions_dealer = require('./functions_dealer');
 
@@ -38,7 +38,9 @@ module.exports = function(app, passport) {
 
     // process the LOGIN form
     app.post('/login', function(req, res, next){
-        passport.authenticate('local-login', function (err, user, info) {
+        passport.authenticate('local-login', function (err, 
+                                                        
+                                                      , info) {
             //this function is called when LocalStrategy returns done function with parameters
 
             //if any error , throw error to default error handler

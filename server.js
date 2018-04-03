@@ -29,14 +29,15 @@ app.use(bodyParser.json());
 
 // required for passport
 app.use(session({ 
-    secret: "winteriscoming",
-    resave: true,
+
+	secret: "winteriscoming",
+	resave: true,
     saveUninitialized: true,
-        cookie: {
-            httpOnly: true,
-            secure: false
-    }
-    }));
+		cookie: {
+			httpOnly: true,
+			secure: false
+	}
+	})); // session secret
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
@@ -80,7 +81,7 @@ app.use(function(err, req, res, next) {
 
     io.sockets.on('connection', function (socket) { // on connection
 
-    	// add clent to clients array when online
+    	// add clent to clients array when online     
         socket.on('storeClientInfo', function (data) {
 
             var clientInfo = new Object();
