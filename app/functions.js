@@ -32,7 +32,7 @@ module.exports = {
 
 
 	loginfunc: function(req, res) {
-        res.send("WELCOME PLEASE LOGIN");
+        res.send({msg: "WELCOME PLEASE LOGIN"});
     },
 
 
@@ -42,7 +42,6 @@ module.exports = {
         var category = req.session.category;
         var data_id = req.params.id;
         var profile = {};
-        console.log(req.body.hides);
         connection.query("SELECT * FROM account WHERE id = ?", [data_id], function(err, rows){
             if(data_id == userid){
                 profile.status = "same";
@@ -58,14 +57,17 @@ module.exports = {
 
     // route middleware to make sure
 	isLoggedInfunc: function isLoggedIn(req, res, next) {
-         console.log(req.session);
         //return next();
+        
 	    // if user is authenticated in the session, carry on
 	    if (req.isAuthenticated()){
 	        return next();
         }
+        else {
+            res.redirect('/login');
+        }
 	    // if they aren't redirect them to the home page
-	    res.redirect('/login');
+
 	},
 
 
@@ -147,7 +149,7 @@ module.exports = {
                     res.send(car);
                 }
                 else
-                    res.send("CAR NOT FOUND");    
+                    res.send({msg: "CAR NOT FOUND"});    
                 }
             });
         },
@@ -156,15 +158,14 @@ module.exports = {
         var userid = req.body.mobile;
         selectquery = "SELECT * from account where mobile = ?";
         connection.query(selectquery, [userid], function(err, rows){
-            console.log(rows);
 
             if(err)throw err;
             else if(!rows.length){
-                res.send("no user with this mobile exists");
+                res.send({msg: "no user with this mobile exists"});
             }
             else {
                 others.generate_mail(req, rows);
-                res.send("A mail has been send to your registered email-id")
+                res.send({msg: "A mail has been send to your registered email-id"})
             }
         })
     },
@@ -189,7 +190,6 @@ module.exports = {
 
     reset_pass_post_form : function(req, res){
         selectquery = "SELECT * from account where resetPasswordToken = ? AND resetPasswordExpire > NOW()";
-        console.log(req.params);
         connection.query(selectquery,[req.params.token], function(err, rows) {
             if(err)throw err;
             else if(!rows.length){
@@ -199,14 +199,12 @@ module.exports = {
                 return res.status(200).json(result);
             }
 
-            console.log(req.body);
             password = bcrypt.hashSync(req.body.password, null, null);
             resetPasswordExpire = undefined;
             resetPasswordToken = undefined;
             updatequery = "UPDATE account set password = ?, resetPasswordToken = ?, resetPasswordExpire = ? WHERE mobile = ?";
             connection.query(updatequery, [password, resetPasswordToken, resetPasswordExpire, rows[0].mobile], function(err, rows){
                 if(err)throw err;
-                console.log(password);
                 res.status(200).json({data: rows, message : " Your password has been reset."});
             });
         });
@@ -214,7 +212,6 @@ module.exports = {
 
     existing_dealers: function(req,res){
         var category = req.session.category;
-        console.log(category);
         connection.query("SELECT * FROM account WHERE category = 2", function(err, rows){
             if (err){
                 throw err;
@@ -226,7 +223,7 @@ module.exports = {
                 if(category== 3 || category == 2){
                     res.send(rows); 
                 }
-                else res.send("Not found");
+                else res.send({msg: "Not found"});
             }
         });
     },
@@ -247,15 +244,12 @@ module.exports = {
     add_car_post_form:  function(req,res){
         var id = req.session.user;
         var data = req.body;
-        console.log(data);
         insertQuery = "INSERT INTO all_equipment (name, bought_price, year, rating, dealer, auction_para) values (?,?,?,?,?,?)";
         connection.query(insertQuery,[data.name, data.bought_price, data.year, data.rating, id, data.auction_para], function(err, rows){
             if (err){
                 throw err;
             }
             else {
-                console.log(rows);
-
                 res.redirect('/profile');
             }
         });
@@ -335,8 +329,7 @@ module.exports = {
         
             if(data.new_bid <= next_bid){
                 //message to flash that you must bid higher than mini bid
-                console.log('smaller than mini bid');
-                res.send("Please Bid higher");
+                res.send({msg: "Please Bid higher"});
             }
             else {
                 next_bid = Number(data.new_bid) + 1000;
@@ -349,7 +342,7 @@ module.exports = {
                         connection.query(updatequery, [next_bid, data.equip_id], function(err,req){
                             if(err) throw err;
                             else{
-                            res.send("Your bid is recorded");
+                            res.send({msg: "Your bid is recorded"});
                             }
                         });
                     }
@@ -359,17 +352,13 @@ module.exports = {
     },
 
         add_to_likes: (req,res)=>{
-            console.log(req.session);
-            console.log(req.data);
         insertQuery="INSERT IGNORE INTO likes (user_id, equip_id) VALUES (?,?)";
         connection.query(insertQuery,[req.session.user, req.body.equip_id],(err,rows)=>{
             if(err){
                 throw err;
             }
             else{
-                console.log(rows);
                 if(rows.affectedRows){
-                    console.log('dfdfgh');
                 Query="UPDATE all_equipment SET likes=likes+1 WHERE id= ?"
         connection.query(Query,[req.body.equip_id],(err,rows)=>{
             if(err){
@@ -439,7 +428,6 @@ module.exports = {
                 res.send("NO AUCTION AVAILABLE");
             }
         else {
-            console.log(rows);
             res.send(rows);
         // callback(rows);
             }

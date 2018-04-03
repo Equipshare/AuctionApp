@@ -1,7 +1,7 @@
 //initializing and loading things
 var express  = require('express');
 var app = express();
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 3000;
 var serv = require('http').Server(app);
 var io = require('socket.io').listen(serv);
 var passport = require('passport');
@@ -27,10 +27,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.set('view engine', 'ejs'); // set up ejs for templating
-
 // required for passport
 app.use(session({ 
+
 	secret: "winteriscoming",
 	resave: true,
     saveUninitialized: true,
@@ -50,7 +49,7 @@ require('./app/routes.js')(app, passport); // load our routes and pass in our ap
 // require('./app/functions.js')(app);
 
 // launch ======================================================================
-serv.listen('8080', function () {
+serv.listen(port, function () {
 	console.log('server initiated');
 	//==============================================================================
 	//=============== DAILY AUCTION SCHEDULE CODE ==================================
@@ -62,6 +61,16 @@ serv.listen('8080', function () {
 });
 console.log('The magic happens on port ' + port);
 
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+})
 
 
 //==============================================================================
@@ -72,7 +81,7 @@ console.log('The magic happens on port ' + port);
 
     io.sockets.on('connection', function (socket) { // on connection
 
-    	// add clent to clients array when online
+    	// add clent to clients array when online     
         socket.on('storeClientInfo', function (data) {
 
             var clientInfo = new Object();

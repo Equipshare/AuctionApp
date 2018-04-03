@@ -12,7 +12,7 @@ var express  = require('express');
 var app = express();
 
 // import functions from other files.
-var functions = require('./functions');
+var functions = require('./functions')
 var functions_admin = require('./functions_admin');
 var functions_dealer = require('./functions_dealer');
 
@@ -20,11 +20,11 @@ var functions_dealer = require('./functions_dealer');
 module.exports = function(app, passport) {
 
     // HOME PAGE
-    app.get('/',functions.isLoggedInfunc, function(req, res) {
+    app.get('/', functions.isLoggedInfunc, function(req, res) {
         console.log("Logged in with id: " + req.session.user);
         connection.query("SELECT first_name from account where id = ?", [req.session.user], function(err,rows){
             data = {
-                id: req.session.name,
+                id: req.session.user,
                 name: rows[0].first_name,
                 msg: "Hello, Welcome"
             };
@@ -38,7 +38,9 @@ module.exports = function(app, passport) {
 
     // process the LOGIN form
     app.post('/login', function(req, res, next){
-        passport.authenticate('local-login', function (err, user, info) {
+        passport.authenticate('local-login', function (err, 
+                                                        
+                                                      , info) {
             //this function is called when LocalStrategy returns done function with parameters
 
             //if any error , throw error to default error handler
@@ -46,7 +48,7 @@ module.exports = function(app, passport) {
 
             //if username or password doesn't match
             if(!user){
-                return res.send(info);
+                return res.send({msg: info});
             }
 
             //this is when login is successful
@@ -57,7 +59,6 @@ module.exports = function(app, passport) {
             
         })(req,res,next),
         function(req, res) {
-            console.log("hello");
             if (req.body.remember) {
               req.session.cookie.maxAge = 1000 * 60 * 3;
             } else {
@@ -75,11 +76,34 @@ module.exports = function(app, passport) {
     });
 
     // process the signup form
-    app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/dashboard', // redirect to the secure profile section
-        failureRedirect : '/signup', // redirect back to the signup page if there is an error
-        failureFlash : true // allow flash messages
-    }));
+    app.post('/signup', function(req, res, next){
+        passport.authenticate('local-signup', function (err, user, info) {
+            //this function is called when LocalStrategy returns done function with parameters
+
+            //if any error , throw error to default error handler
+            if(err) throw err;
+
+            //if username or password doesn't match
+            if(!user){
+                return res.send({msg: info});
+            }
+
+            //this is when login is successful
+            req.logIn(user, function(err) {
+                if (err) { return next(err); }
+                return res.redirect('/');
+            });
+            
+        })(req,res,next),
+        function(req, res) {
+            if (req.body.remember) {
+              req.session.cookie.maxAge = 1000 * 60 * 3;
+            } else {
+              req.session.cookie.expires = false;
+            }
+        res.redirect('/');
+        }
+    })
 
     // PROFILE SECTION =====================
     app.get('/profile/:id', functions.isLoggedInfunc, functions.profilefunc); // issLoggedIn verifies that user is authenticated
@@ -167,7 +191,6 @@ module.exports = function(app, passport) {
         // for temporary use
         query = "SHOW DATABASES";
         connection.query(query, function(err, rows){
-            console.log(rows);
             res.send(rows);
         });
     });

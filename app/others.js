@@ -32,7 +32,6 @@ module.exports = {
             updatequery = "UPDATE account SET resetPasswordToken = ?, resetPasswordExpire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE mobile = ?";
 
             connection.query(updatequery, [token, rows[0].mobile], function(err, rows){
-                console.log(rows);
                 if(err) throw err;
                 else return rows;
                 });
