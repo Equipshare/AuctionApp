@@ -1,5 +1,9 @@
 // app/routes.js
 
+// all the routes/request that are required in the server side.
+// all request are handled here.
+
+
 //load all the things needed.
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
@@ -12,16 +16,18 @@ var express  = require('express');
 var app = express();
 
 // import functions from other files.
-var functions = require('./functions')
-var functions_admin = require('./functions_admin');
-var functions_dealer = require('./functions_dealer');
+var functions = require('./functions') //common functions
+var functions_admin = require('./functions_admin'); // most of the admin side functions
+var functions_dealer = require('./functions_dealer'); // most of the dealers side functions
 
 // ==========================================
+// export all the routes
 module.exports = function(app, passport) {
 
-    // HOME PAGE
+    // HOME PAGE, after checking that the user is logged in.
     app.get('/', functions.isLoggedInfunc, function(req, res) {
         console.log("Logged in with id: " + req.session.user);
+        //on sucessful login
         connection.query("SELECT first_name from account where id = ?", [req.session.user], function(err,rows){
             data = {
                 id: req.session.user,
@@ -34,13 +40,17 @@ module.exports = function(app, passport) {
 
     // LOGIN
     // show the login form or redirct to profile if already logged in
+    // see functions definition above.
+    // get request login
     app.get('/login', functions.loginfunc);
 
     // process the LOGIN form
     app.post('/login', function(req, res, next){
+        //call the local-login in ../config/passport.js
         passport.authenticate('local-login', function (err, 
                                                         
                                                       , info) {
+            // info is json given by passport.aunthicate
             //this function is called when LocalStrategy returns done function with parameters
 
             //if any error , throw error to default error handler
@@ -54,11 +64,12 @@ module.exports = function(app, passport) {
             //this is when login is successful
             req.logIn(user, function(err) {
                 if (err) { return next(err); }
-                return res.redirect('/');
+                return res.redirect('/'); // redirect to home
             });
             
         })(req,res,next),
         function(req, res) {
+            // session age.
             if (req.body.remember) {
               req.session.cookie.maxAge = 1000 * 60 * 3;
             } else {
@@ -69,7 +80,7 @@ module.exports = function(app, passport) {
     });
 
     // SIGNUP ==============================
-    // show the signup form
+    // show the signup form, contact the front-end-guy for changing this.
     app.get('/signup', function(req, res) {
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', { message: req.flash('signupMessage') });
@@ -88,10 +99,10 @@ module.exports = function(app, passport) {
                 return res.send({msg: info});
             }
 
-            //this is when login is successful
+            //this is when signup is successful
             req.logIn(user, function(err) {
                 if (err) { return next(err); }
-                return res.redirect('/');
+                return res.redirect('/'); //redirect to home for login.
             });
             
         })(req,res,next),
@@ -104,6 +115,9 @@ module.exports = function(app, passport) {
         res.redirect('/');
         }
     })
+
+    // below are diffrent routes. they check that the user is logged in or not, then call the required function.
+    // these are the so calles APIs.
 
     // PROFILE SECTION =====================
     app.get('/profile/:id', functions.isLoggedInfunc, functions.profilefunc); // issLoggedIn verifies that user is authenticated
@@ -124,21 +138,23 @@ module.exports = function(app, passport) {
 
     //POST for password reset and if token hasn't expired, the password of user is reset.
     app.post('/reset/:token', functions.reset_pass_post_form);
-
+    // add a car to likes
     app.post('/add_to_likes', functions.isLoggedInfunc, dealer_user_access, functions.add_to_likes);
-
+    // search suggestion - yet to optimize
     app.post('/search_suggestions', functions.isLoggedInfunc, dealer_user_access, functions.search_suggestions);
-
     app.post('/search', functions.isLoggedInfunc, dealer_user_access, functions.search);
 
+    // my liked cars/equipments
     app.get('/my_likes', functions.isLoggedInfunc, dealer_user_access, functions.my_likes);    
-
+    // show_car_with id.
      app.get('/show_car/:id', functions.isLoggedInfunc, functions.show_car);
 
     //================================================================================
     //======================= ADMIN ROUTES ===========================================
     //================================================================================
 
+    // request name may give some insights. for more details go to the respective function.
+    // all are checking that the user is first logged in and then that he is of the right category that the request belong to.
 
     app.post('/admin/new_location', functions.isLoggedInfunc, admin_access, functions_admin.add_new_location);
     app.get('/admin/existing_location', functions.isLoggedInfunc, admin_access, functions_admin.existing_location);
@@ -186,7 +202,7 @@ module.exports = function(app, passport) {
 
 
     // // TEMPORARY routes =================================================================
-
+    // FOR denugging purpose.
     app.get('/temp', function (req, res){
         // for temporary use
         query = "SHOW DATABASES";
@@ -199,18 +215,26 @@ module.exports = function(app, passport) {
     //     res.send(req.body);
     // });
 }
+//__________________________________
+//  logged in person category chart |
+//     user     ==  1               |
+//     dealer   ==  2               |
+//     admin    ==  3               |
+//__________________________________|
 
-
+// check if the the category of the client is dealer i.e. 2
 var dealer_access = function access(req,res,next){
     if(req.session.category==2) return next();
     return res.render("Profiles/dealer/error.ejs");
 }
-
+// check if the the category of the client is admin i.e. 1
 var admin_access = function access(req,res,next){
     if(req.session.category==3) return next();
     return res.render("Profiles/dealer/error.ejs");
 }
 
+
+//general check if category is user or dealer
 var dealer_user_access = function access(req,res,next){
     if(req.session.category==1 || req.session.category ==2) return next();
     return res.render("Profiles/dealer/error.ejs");

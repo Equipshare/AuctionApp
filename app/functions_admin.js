@@ -20,8 +20,9 @@ var app = express();
 
 // ================== DAILY AUCTION TIME ===================
 
-var DAST = "15:00:00";
-var DAET = "20:00:00";
+// Should have placed in databse table
+var DAST = "15:00:00"; // Daily auction start time
+var DAET = "20:00:00"; // Daily auction end time
 
 // =========================================================
 
@@ -32,6 +33,7 @@ module.exports = {
     //================================================================================
 
     //Handle POST request to add a new working location 
+    //
     add_new_location: function(req, res){
     	var city = req.body.city;
     	var city = city.toUpperCase(); // Change CASE to uppercase for handling case-coflicts while comparing
@@ -116,6 +118,7 @@ module.exports = {
                 req.send("That mobile is already taken");
             } else {
    	            // if there is no user with that mobile number then create the user
+                // insert data into account table
                 var insertQuery1 = "INSERT INTO account ( mobile, email, mobile, wallet, address) values (?,?,?,?,?,?,?)";
                 var category = 3;
                 var wallet = 0;
@@ -130,7 +133,7 @@ module.exports = {
 	            	connection.query(insertQuery2,[rows.insertId, data.location, req.session.user]);
                     connection.query("SELECT * from account WHERE mobile = ?", [data.mobile], function(err, rows){
                         // generate mail to send to the email for reseting password
-                        others.generate_mail(req, rows);
+                        others.generate_mail(req, rows); // generate mail to verify account.
                         res.send("Mail Send to, Tell other admin to change password in an hour");
                     });
 	            	}
@@ -175,7 +178,7 @@ module.exports = {
 
     add_new_equipment_by_csv: function(req, res){
         //
-        //
+        // need to doo this.
         //
         //
         //
@@ -200,7 +203,7 @@ module.exports = {
                 connection.query(insertQuery, [data.start_time, data.end_time, 2],function (err, rows) {
                     if (err) throw err;
                     else {
-
+                        // Customer to customer auction, Dealer to customer auction etc..
                         console.log("New C->C + D->C Auction Added with start_time: " + data.start_time + " and end_time: " + data.end_time);
 
                         var upcoming_auction = functions.next_upcoming_auction(2);
@@ -236,6 +239,8 @@ module.exports = {
         connection.query(selectquery, [user], function(err, rows){
             console.log(rows);
 
+            // Add data to enquiry table.
+            // need an API to retrieve data drom this.
             connection.query("INSERT INTO enquiry (sender_id, reciever_id, description, subject) values (?,?,?,?)",[user, rows[0].boss_id, data.description, data.subject], function(err, rows){
                 if(err) throw err;
                 else{
@@ -277,11 +282,11 @@ module.exports = {
     },
 
     // Things to do at the end of the auction
+    // NEED VERY MUCH UPDATION
     end_schedule : function(auction_id, end_time){
 
         var j = schedule.scheduleJob(end_time, function(){
             //insert all data into auction_bid after the auction
-
             selectquery = "INSERT INTO auction_object (id, equip_id, auction_id, buyer_id, maxi_bid, time, mini_bid) (select a.*, b.mini_bid from (SELECT b.* from (SELECT equip_id, MAX(bid_price) AS bid_price FROM bids where auction_id = ? GROUP BY equip_id) a, bids b where a.equip_id = b.equip_id AND a.bid_price = b.bid_price and auction_id = ?) a, all_equipment b where a.equip_id = b.id OR (b.mini_bid = b.next_bid AND auction = ?) )";
 
 
@@ -306,6 +311,7 @@ module.exports = {
         });
     },
 
+    // change time of daily auctions
     change_time : function (req, res){
     	DAST = req.body.start_time;   //this is type = "time"
     	DAET = req.body.end_time;

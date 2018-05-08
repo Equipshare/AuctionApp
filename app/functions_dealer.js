@@ -74,6 +74,9 @@ module.exports = {
         });
     },
 
+    // Code below this was written by Shivam. I will ask him for adding cooments.
+    // Below code is mostly for autobidder.
+
     //ADDS details and preferences of costumer through dealer's account
     dealer_purchase: (req,res)=>{
         selectQuery = "";//to do

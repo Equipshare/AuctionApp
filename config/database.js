@@ -1,4 +1,6 @@
 // config/database.js
+
+// configs to connect to the database
 module.exports = {
     'connection': {
       // local configs.

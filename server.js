@@ -3,21 +3,21 @@ var express  = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 var serv = require('http').Server(app);
-var io = require('socket.io').listen(serv);
+var io = require('socket.io').listen(serv); // for p2p chat.
 var passport = require('passport');
 var flash    = require('connect-flash');
 
 var session  = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var morgan = require('morgan');
+var morgan = require('morgan'); // to log everything
 
-var configDB = require('./config/database.js');
+var configDB = require('./config/database.js'); // including database config
 //==============================================================
 
 
 require('./config/passport')(passport); // passport for configuration
-schedule_auction = require('./app/functions_admin');
+schedule_auction = require('./app/functions_admin'); // including admin functions
 
 // set up of express application
 app.use(morgan('dev')); // log every request to the console
@@ -27,10 +27,10 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// required for passport
+// session configs
 app.use(session({ 
 
-	secret: "winteriscoming",
+	secret: "winteriscoming", // session key
 	resave: true,
     saveUninitialized: true,
 		cookie: {
@@ -59,9 +59,10 @@ serv.listen(port, function () {
 
 
 });
-console.log('The magic happens on port ' + port);
+// port
+console.log('Server running on port: ' + port);
 
-// error handler
+// error handler  == not working as of now
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -77,7 +78,7 @@ app.use(function(err, req, res, next) {
 //=============== CHAT CODE ====================================================
 //==============================================================================
 
- var clients =[]; //store clients socket id and account id who are online
+var clients =[]; //store clients socket id and account id who are online
 
     io.sockets.on('connection', function (socket) { // on connection
 
@@ -135,4 +136,6 @@ app.use(function(err, req, res, next) {
 
         });
     });
+
+// useful link to understand hoe the login system works
 //https://scotch.io/tutorials/easy-node-authentication-setup-and-local

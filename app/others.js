@@ -1,3 +1,6 @@
+//
+
+// other requirred functions required
 
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
@@ -23,6 +26,7 @@ var crypto = require('crypto');
 
 module.exports = {
 
+    // for generating mail, currently using sendgrid service, change to the hired one.
 	generate_mail: function (req, rows) {
         // body...
         crypto.randomBytes(20, function(err, buf){

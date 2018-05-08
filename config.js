@@ -1,3 +1,5 @@
+// no need to have this while not uploading in gcoud
+
 'use strict';
 
 // Hierarchical node.js configuration with command-line arguments, environment
